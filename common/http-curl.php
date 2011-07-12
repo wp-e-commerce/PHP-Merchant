@@ -37,7 +37,7 @@ class PHP_Merchant_HTTP_CURL extends PHP_Merchant_HTTP
 		switch ( $method ) {
 			case 'POST':
 				curl_setopt( $handle, CURLOPT_POST, true );
-				curl_setopt( $handle, CURLOPT_POSTFIELDS, $fields );
+				curl_setopt( $handle, CURLOPT_POSTFIELDS, $body );
 				break;
 		}
 		
