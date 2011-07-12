@@ -44,7 +44,7 @@ class PHP_Merchant_HTTP_CURL extends PHP_Merchant_HTTP
 		$response = curl_exec( $handle );
 		
 		if ( ! $response ) {
-			throw new PHP_Merchant_Exception( PHPME_HTTP_REQUEST_FAILED, curl_error( $ch ) );
+			throw new PHP_Merchant_Exception( PHPME_HTTP_REQUEST_FAILED, curl_error( $handle ) );
 		}
 		
 		return $response;
