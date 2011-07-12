@@ -4,6 +4,7 @@ require_once( 'simpletest/autorun.php' );
 require_once( 'simpletest/web_tester.php' );
 
 define( 'PHP_MERCHANT_PATH', realpath( '../' ) );
+define( 'PHP_MERCHANT_TEST_PATH', dirname( __FILE__ ) );
 
 class PHP_Merchant_Test_Suite extends TestSuite
 {
@@ -15,6 +16,10 @@ class PHP_Merchant_Test_Suite extends TestSuite
 			'gateways/paypal',
 			'gateways/paypal-express-checkout',
 		);
+
+		if ( ! empty( $_GET['remote'] ) ) {
+			$tests[] = 'remote/http-curl';
+		}
 		
 		$dir = dirname( __FILE__ );
 		
