@@ -21,10 +21,8 @@ class PHP_Merchant_HTTP_CURL_Remote_Test extends WebTestCase
 		
 		$http = new PHP_Merchant_HTTP_CURL();
 		$actual_content = $http->post( 'http://garyc40.com/test-post.php', array(
-			'body' => array(
-				'key 1' => 'value 1',
-				'test another key' => 'value 2',
-			),
+			'key 1' => 'value 1',
+			'test another key' => 'value 2',
 		) );
 		$this->assertEqual( $expected_content, $actual_content );
 	}

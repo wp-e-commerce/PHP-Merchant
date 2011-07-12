@@ -3,7 +3,7 @@
 class PHP_Merchant_HTTP_CURL extends PHP_Merchant_HTTP
 {	
 	protected function parse_args( $args ) {
-		if ( is_array( $args ) ) {
+		if ( is_array( $args )  ) {
 			$str = array();
 			foreach ( $args as $key => $value ) {
 				$str[] = urlencode( $key ) . '=' . urlencode( $value );
@@ -14,7 +14,7 @@ class PHP_Merchant_HTTP_CURL extends PHP_Merchant_HTTP
 		return $args;
 	}
 	
-	protected function request( $url, $args = array() ) {
+	protected function request( $url, $fields = '', $args = array() ) {
 		$defaults = array(
 			'follow' => true,
 			'method' => 'GET',
@@ -24,9 +24,9 @@ class PHP_Merchant_HTTP_CURL extends PHP_Merchant_HTTP
 		
 		$args = array_merge( $defaults, $args );
 		extract( $args, EXTR_SKIP );
-		
-		$body = $this->parse_args( $body );
-		
+
+		$body = $this->parse_args( $fields );
+
 		$handle = curl_init();
 		curl_setopt( $handle, CURLOPT_URL, $url );
 		curl_setopt( $handle, CURLOPT_RETURNTRANSFER, true );
@@ -40,7 +40,7 @@ class PHP_Merchant_HTTP_CURL extends PHP_Merchant_HTTP
 				curl_setopt( $handle, CURLOPT_POSTFIELDS, $body );
 				break;
 		}
-		
+
 		$response = curl_exec( $handle );
 		
 		if ( ! $response ) {
@@ -50,12 +50,12 @@ class PHP_Merchant_HTTP_CURL extends PHP_Merchant_HTTP
 		return $response;
 	}
 	
-	public function post( $url, $args = array() ) {
+	public function post( $url, $fields = '', $args = array() ) {
 		$args['method'] = 'POST';
-		return $this->request( $url, $args );
+		return $this->request( $url, $fields, $args );
 	}
 	
-	public function get( $url, $args = array() ) {
-		return $this->request( $url, $args );
+	public function get( $url, $fields = '', $args = array() ) {
+		return $this->request( $url, $fields, $args );
 	}
 }
