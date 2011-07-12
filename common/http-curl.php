@@ -1,12 +1,61 @@
 <?php
 
 class PHP_Merchant_HTTP_CURL extends PHP_Merchant_HTTP
-{
-	public function post() {
+{	
+	protected function parse_args( $args ) {
+		if ( is_array( $args ) ) {
+			$str = array();
+			foreach ( $args as $key => $value ) {
+				$str[] = urlencode( $key ) . '=' . urlencode( $value );
+			}
+			$args = implode( '&', $str );
+		}
 		
+		return $args;
 	}
 	
-	public function get() {
+	protected function request( $url, $args = array() ) {
+		$defaults = array(
+			'follow' => true,
+			'method' => 'GET',
+			'ssl_verify' => false,
+			'body' => '',
+		);
 		
+		$args = array_merge( $defaults, $args );
+		extract( $args, EXTR_SKIP );
+		
+		$body = $this->parse_args( $body );
+		
+		$handle = curl_init();
+		curl_setopt( $handle, CURLOPT_URL, $url );
+		curl_setopt( $handle, CURLOPT_RETURNTRANSFER, true );
+		curl_setopt( $handle, CURLOPT_SSL_VERIFYHOST, $ssl_verify ? 2 : false );
+		curl_setopt( $handle, CURLOPT_SSL_VERIFYPEER, $ssl_verify );
+		curl_setopt( $handle, CURLOPT_FOLLOWLOCATION, $follow );
+		
+		switch ( $method ) {
+			case 'POST':
+				curl_setopt( $handle, CURLOPT_POST, true );
+				curl_setopt( $handle, CURLOPT_POSTFIELDS, $fields );
+				break;
+		}
+		
+		$response = curl_exec( $handle );
+		
+		if ( ! $response ) {
+			throw new PHP_Merchant_Exception( PHPME_HTTP_REQUEST_FAILED, curl_error( $ch ) );
+		}
+		
+		return $response;
+	}
+	
+	public function post( $url, $args = array() ) {
+		$args['method'] = 'POST';
+		return $this->request( $url, $args );
+	}
+	
+	public function get( $url, $args = array() ) {
+		return $this->request( $url, $args );
 	}
 }

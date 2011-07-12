@@ -6,6 +6,6 @@ abstract class PHP_Merchant_HTTP
 		
 	}
 	
-	abstract public function get();
-	abstract public function post();
+	abstract public function get( $url, $args = array() );
+	abstract public function post( $url, $args = array() );
 }
