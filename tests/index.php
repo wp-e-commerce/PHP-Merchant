@@ -1,7 +1,9 @@
 <?php
 
-if ( ! empty( $_GET['remote'] ) )
+if ( ! empty( $_GET['remote'] ) ) {
 	require_once( 'simpletest/web_tester.php' );
+	require_once( 'common/test-accounts.php' );
+}
 
 require_once( 'simpletest/autorun.php' );
 
@@ -20,7 +22,10 @@ class PHP_Merchant_Test_Suite extends TestSuite
 		);
 
 		if ( ! empty( $_GET['remote'] ) ) {
-			$tests[] = 'remote/http-curl';
+			$tests = array_merge( $tests, array(
+				'remote/http-curl',
+				'remote/paypal-express-checkout',
+			) );
 		}
 
 		$dir = dirname( __FILE__ );
