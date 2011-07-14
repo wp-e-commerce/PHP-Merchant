@@ -49,8 +49,10 @@ abstract class PHP_Merchant_Paypal extends PHP_Merchant
 		return $credentials;
 	}
 	
-	protected function build_request( $request = array() ) {
+	protected function build_request( $action = '', $request = array() ) {
 		$this->request += $this->add_credentials();
+		if ( ! empty( $action ) )
+			$this->request['METHOD'] = $action;
 		$this->request = array_merge( $this->request, $request );
 		return $this->request;
 	}
@@ -72,8 +74,7 @@ abstract class PHP_Merchant_Paypal extends PHP_Merchant
 	}
 	
 	protected function commit( $action, $request = array() ) {
-		$request['METHOD'] = $action;
-		$this->build_request( $request );
+		$this->build_request( $action, $request );
 		return $this->http->post( $this->get_url(), $this->request );
 	}
 }

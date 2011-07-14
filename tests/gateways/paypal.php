@@ -82,6 +82,7 @@ class PHP_Merchant_Paypal_Test extends UnitTestCase
 			'PWD'       => 'QFZCWN5HZM8VBG7Q',
 			'VERSION'   => '74.0',
 			'SIGNATURE' => 'A-IzJhZZjhg29XQ2qnhapuwxIDzyAZQ92FRP5dqBzVesOkzbdUONzmOU',
+			'METHOD'    => 'SetExpressCheckout',
 			
 			'PAYMENTREQUEST_0_SHIPTONAME'        => 'Gary Cao',
 			'PAYMENTREQUEST_0_SHIPTOSTREET'      => '1 Infinite Loop',
@@ -93,7 +94,7 @@ class PHP_Merchant_Paypal_Test extends UnitTestCase
 			'PAYMENTREQUEST_0_SHIPTOPHONENUM'    => '(877) 412-7753',
 		);
 		
-		$request = $this->bogus->build_request( $additional_params );
+		$request = $this->bogus->build_request( 'SetExpressCheckout', $additional_params );
 		$this->assertEqual( $request, $full_param_list );
 	}
 	
@@ -118,7 +119,7 @@ class PHP_Merchant_Paypal_Bogus extends PHP_Merchant_Paypal
 		return parent::add_credentials();
 	}
 	
-	public function build_request( $request = array() ) {
-		return parent::build_request( $request );
+	public function build_request( $action, $request = array() ) {
+		return parent::build_request( $action, $request );
 	}
 }
