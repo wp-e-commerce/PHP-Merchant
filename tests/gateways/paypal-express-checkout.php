@@ -7,16 +7,15 @@ class PHP_Merchant_Paypal_Express_Checkout_Test extends UnitTestCase
 	private $bogus;
 	private $options;
 	private $amount;
+	private $token;
 	
 	public function __construct() {
 		parent::__construct( 'PHP_Merchant_Paypal_Express_Checkout test cases' );
 		$this->amount = 15337;
+		$this->token = 'EC-6L77249383950130E';
 		// options to pass to the merchant class
 		$this->setup_purchase_options = array(
 			// API info
-			'api_username'      => 'sdk-three_api1.sdk.com',
-			'api_password'      => 'QFZCWN5HZM8VBG7Q',
-			'api_signature'     => 'A-IzJhZZjhg29XQ2qnhapuwxIDzyAZQ92FRP5dqBzVesOkzbdUONzmOU',
 			'return_url'        => 'http://example.com/return',
 			'cancel_url'        => 'http://example.com/cancel',
 			'address_override'  => true,
@@ -73,7 +72,11 @@ class PHP_Merchant_Paypal_Express_Checkout_Test extends UnitTestCase
 	}
 	
 	public function setUp() {
-		$this->bogus = new PHP_Merchant_Paypal_Express_Checkout_Bogus();
+		$this->bogus = new PHP_Merchant_Paypal_Express_Checkout_Bogus( array(
+			'api_username'      => 'sdk-three_api1.sdk.com',
+			'api_password'      => 'QFZCWN5HZM8VBG7Q',
+			'api_signature'     => 'A-IzJhZZjhg29XQ2qnhapuwxIDzyAZQ92FRP5dqBzVesOkzbdUONzmOU',
+		) );
 	}
 	
 	public function tearDown() {
@@ -144,10 +147,87 @@ class PHP_Merchant_Paypal_Express_Checkout_Test extends UnitTestCase
 		$this->bogus->setup_purchase( $this->amount, $this->setup_purchase_options );
 	}
 	
+	public function test_correct_parameters_are_sent_when_get_express_checkout_details() {
+		$url = 'https://api-3t.paypal.com/nvp';
+		$args = array(
+			// API info
+			'USER'      => 'sdk-three_api1.sdk.com',
+			'PWD'       => 'QFZCWN5HZM8VBG7Q',
+			'VERSION'   => '74.0',
+			'SIGNATURE' => 'A-IzJhZZjhg29XQ2qnhapuwxIDzyAZQ92FRP5dqBzVesOkzbdUONzmOU',
+			'METHOD'    => 'GetExpressCheckoutDetails',
+			'TOKEN'     => $this->token,
+		);
+		
+		$this->bogus->http->expectOnce( 'post', array( $url, $args ) );
+		$this->bogus->get_details_for( $this->token );
+	}
+	
 	public function test_correct_response_is_returned_when_set_express_checkout_is_successful() {
 		$mock_response = 'ACK=Success&CORRELATIONID=224f0e4a32d14&TIMESTAMP=2011%2d07%2d05T13%253A23%253A52Z&VERSION=2%2e30000&BUILD=1%2e0006&TOKEN=EC%2d1OIN4UJGFOK54YFV';
 		$this->bogus->http->returnsByValue( 'post', $mock_response );
 		$response = $this->bogus->setup_purchase( $this->amount, $this->setup_purchase_options );
+		
+		$this->assertTrue( $response->is_successful() );
+		$this->assertFalse( $response->has_errors() );
+		$this->assertEqual( $response->get( 'token'          ), 'EC-1OIN4UJGFOK54YFV'  );
+		$this->assertEqual( $response->get( 'timestamp'      ), 1309872232             );
+		$this->assertEqual( $response->get( 'datetime'       ), '2011-07-05T13:23:52Z' );
+		$this->assertEqual( $response->get( 'correlation_id' ), '224f0e4a32d14'        );
+		$this->assertEqual( $response->get( 'version'        ), '2.30000'              );
+		$this->assertEqual( $response->get( 'build'          ), '1.0006'               );
+	}
+	
+	public function test_correct_response_is_returned_when_get_express_checkout_details_is_successful() {
+		$mock_response = 'ACK=Success&CORRELATIONID=224f0e4a32d14&TIMESTAMP=2011%2d07%2d05T13%253A23%253A52Z&VERSION=2%2e30000&BUILD=1%2e0006&TOKEN=EC%2d1OIN4UJGFOK54YFV'.
+		                 '&PAYERID=U6ES54SO380WI'.
+		
+		                 // Shipping details
+		                 '&PAYMENTREQUEST_0_SHIPTONAME=Gary%20Cao'.
+		                 '&PAYMENTREQUEST_0_SHIPTOSTREET=1%20Infinite%20Loop'.
+		                 '&PAYMENTREQUEST_0_SHIPTOSTREET2=Apple%20Headquarter'.
+		                 '&PAYMENTREQUEST_0_SHIPTOCITY=Cupertino'.
+		                 '&PAYMENTREQUEST_0_SHIPTOSTATE=CA'.
+		                 '&PAYMENTREQUEST_0_SHIPTOZIP=95014'.
+		                 '&PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE=USA'.
+		                 '&PAYMENTREQUEST_0_SHIPTOPHONENUM=%28877%29%20412-7753'.
+		                 '&PAYMENTREQUEST_0_ADDRESSSTATUS=Confirmed'.
+						
+		                 // Payment info
+		                 '&PAYMENTREQUEST_0_AMT=15%2C337'.
+		                 '&PAYMENTREQUEST_0_CURRENCYCODE=JPY'.
+		                 '&PAYMENTREQUEST_0_PAYMENTACTION=Sale'.
+		                 '&PAYMENTREQUEST_0_ITEMAMT=13%2C700'.
+		                 '&PAYMENTREQUEST_0_SHIPPINGAMT=1%2C500'.
+		                 '&PAYMENTREQUEST_0_TAXAMT=137'.
+		                 '&PAYMENTREQUEST_0_DESC=Order%20for%20example.com'.
+		                 '&PAYMENTREQUEST_0_INVNUM=E84A90G94'.
+		                 '&PAYMENTREQUEST_0_NOTIFYURL=http%3A%2F%2Fexample.com%2Fipn'.
+
+		                 // Items
+		                 '&L_PAYMENTREQUEST_0_NAME0=Gold%20Cart%20Plugin'.
+		                 '&L_PAYMENTREQUEST_0_AMT0=4%2C000'.
+		                 '&L_PAYMENTREQUEST_0_QTY0=1'.
+		                 '&L_PAYMENTREQUEST_0_DESC0=Gold%20Cart%20extends%20your%20WP%20e-Commerce%20store%20by%20enabling%20additional%20features%20and%20functionality%2C%20including%20views%2C%20galleries%2C%20store%20search%20and%20payment%20gateways.'.
+		                 '&L_PAYMENTREQUEST_0_TAXAMT0=40'.
+		                 '&L_PAYMENTREQUEST_0_ITEMURL0=http%3A%2F%2Fgetshopped.org%2Fextend%2Fpremium-upgrades%2Fpremium-upgrades%2Fgold-cart-plugin%2F'.
+
+		                 '&L_PAYMENTREQUEST_0_NAME1=Member%20Access%20Plugin'.
+		                 '&L_PAYMENTREQUEST_0_AMT1=5%2C000'.
+		                 '&L_PAYMENTREQUEST_0_QTY1=1'.
+		                 '&L_PAYMENTREQUEST_0_DESC1=Create%20pay%20to%20view%20subscription%20sites'.
+		                 '&L_PAYMENTREQUEST_0_TAXAMT1=50'.
+		                 '&L_PAYMENTREQUEST_0_ITEMURL1=http%3A%2F%2Fgetshopped.org%2Fextend%2Fpremium-upgrades%2Fpremium-upgrades%2Fmember-access-plugin%2F'.
+
+		                 '&L_PAYMENTREQUEST_0_NAME2=Amazon%20S3'.
+		                 '&L_PAYMENTREQUEST_0_AMT2=4%2C700'.
+		                 '&L_PAYMENTREQUEST_0_QTY2=1'.
+		                 '&L_PAYMENTREQUEST_0_DESC2=This%20Plugin%20allows%20downloadable%20products%20that%20you%20have%20for%20sale%20on%20your%20WP%20e-Commerce%20site%20to%20be%20hosted%20within%20Amazon%20S3.'.
+		                 '&L_PAYMENTREQUEST_0_TAXAMT2=47'.
+		                 '&L_PAYMENTREQUEST_0_ITEMURL2=http%3A%2F%2Fgetshopped.org%2Fextend%2Fpremium-upgrades%2Fpremium-upgrades%2Famazon-s3-plugin%2F';
+		
+		$this->bogus->http->returnsByValue( 'post', $mock_response );
+		$response = $this->bogus->get_details_for( $this->token );
 		
 		$this->assertTrue( $response->is_successful() );
 		$this->assertFalse( $response->has_errors() );

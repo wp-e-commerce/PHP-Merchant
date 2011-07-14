@@ -93,7 +93,6 @@ class PHP_Merchant_Paypal_Express_Checkout extends PHP_Merchant_Paypal
 		);
 		
 		$request = array(
-			'METHOD' => 'SetExpressCheckout',
 			'RETURNURL' => $this->options['return_url'],
 			'CANCELURL' => $this->options['cancel_url'],
 		);
@@ -120,6 +119,18 @@ class PHP_Merchant_Paypal_Express_Checkout extends PHP_Merchant_Paypal
 		$request = $this->build_setup_request( 'Sale', $amt, $options );
 
 		$response_str = $this->commit( 'SetExpressCheckout', $request );
+		return new PHP_Merchant_Paypal_Response( $response_str );
+	}
+	
+	public function build_get_details_request( $token ) {
+		return array(
+			'TOKEN' => $token,
+		);
+	}
+	
+	public function get_details_for( $token ) {
+		$request = $this->build_get_details_request( $token );
+		$response_str = $this->commit( 'GetExpressCheckoutDetails', $request );
 		return new PHP_Merchant_Paypal_Response( $response_str );
 	}
 	
