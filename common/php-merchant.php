@@ -91,6 +91,6 @@ abstract class PHP_Merchant
 		}
 		
 		if ( ! empty( $missing ) )
-			throw new PHP_Merchant_Exception( PHPME_MISSING_REQUIRED_PARAM, implode( ', ', $missing ) );
+			throw new PHP_Merchant_Exception( PHPME_REQUIRED_OPTION_UNDEFINED, implode( ', ', $missing ) );
 	}
 }

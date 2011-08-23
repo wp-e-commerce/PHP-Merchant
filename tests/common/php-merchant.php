@@ -131,7 +131,7 @@ class PHP_Merchant_Test extends UnitTestCase
 	public function test_exception_is_thrown_when_a_required_option_is_missing() {
 		$bogus = new PHP_Merchant_Bogus();
 		
-		$this->expectException( new PHP_Merchant_Exception( PHPME_MISSING_REQUIRED_PARAM, array( 'missing_option' ) ) );
+		$this->expectException( new PHP_Merchant_Exception( PHPME_REQUIRED_OPTION_UNDEFINED, array( 'missing_option' ) ) );
 		$bogus->requires( 'missing_option' );
 	}
 	
@@ -141,7 +141,7 @@ class PHP_Merchant_Test extends UnitTestCase
 		$bogus->set_option( 'option_1', 'option 1' );
 		$bogus->set_option( 'option_2', 'option 2' );
 		
-		$this->expectException( new PHP_Merchant_Exception( PHPME_MISSING_REQUIRED_PARAM, array( 'missing_option' ) ) );
+		$this->expectException( new PHP_Merchant_Exception( PHPME_REQUIRED_OPTION_UNDEFINED, array( 'missing_option' ) ) );
 		$bogus->requires( array( 'currency', 'option_1', 'option_2', 'missing_option' ) );
 	}
 }
