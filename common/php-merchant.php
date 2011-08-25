@@ -13,15 +13,41 @@ require_once( 'response.php' );
 
 abstract class PHP_Merchant
 {
+	/**
+	 * These currencies don't have decimal points. Eg: You never see JPY1000.5
+	 *
+	 * @var array
+	 * @access protected
+	 */
 	protected $currencies_without_fractions = array( 'JPY', 'HUF' );
 	
+	/**
+	 * Options are passed into the object constructor or payment action methods (purchase,
+	 * authorize, capture void, credit, recurring). These options will eventually be used
+	 * to generate HTTP requests to payment gateways.
+	 *
+	 * @var array
+	 * @access protected
+	 */
 	protected $options = array(
 		'currency' => 'USD',
 	);
 	
+	/**
+	 * This is the object that handles sending HTTP requests. The default HTTP client is CURL,
+	 * but you can always set a custom HTTP client object that inherits from PHP_Merchant_HTTP.
+	 *
+	 * @var PHP_Merchant_HTTP
+	 * @access protected
+	 */
 	protected $http;
 	
-	public function __construct( $options = array() ) {		
+	/**
+	 * Constructor of the payment gateway. Accepts an array of options.
+	 *
+	 * @param array $options 
+	 */
+	public function __construct( $options = array() ) {
 		if ( ! array_key_exists( 'http_client', $options ) ) {
 			require_once( 'http-curl.php' );
 			$this->http = new PHP_Merchant_HTTP_CURL();
@@ -33,6 +59,13 @@ abstract class PHP_Merchant
 		$this->set_options( $options );
 	}
 	
+	/**
+	 * Format the amount according to the currency being used.
+	 *
+	 * @param float $amt Amount
+	 * @param string $currency Defaults to the currency specified in defined $options
+	 * @return string
+	 */
 	public function format( $amt, $currency = false ) {
 		if ( ! $currency )
 			$currency = $this->options['currency'];
