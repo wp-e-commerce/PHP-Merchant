@@ -144,7 +144,11 @@ class PHP_Merchant_Paypal_Express_Checkout_Test extends UnitTestCase
 		);
 		
 		$this->bogus->http->expectOnce( 'post', array( $url, $args ) );
-		$this->bogus->setup_purchase( $this->amount, $this->setup_purchase_options );
+		try {
+			$this->bogus->setup_purchase( $this->amount, $this->setup_purchase_options );
+		} catch ( PHP_Merchant_Exception $e ) {
+			
+		}
 	}
 	
 	public function test_correct_parameters_are_sent_when_get_express_checkout_details() {
@@ -160,7 +164,11 @@ class PHP_Merchant_Paypal_Express_Checkout_Test extends UnitTestCase
 		);
 		
 		$this->bogus->http->expectOnce( 'post', array( $url, $args ) );
-		$this->bogus->get_details_for( $this->token );
+		try {
+			$this->bogus->get_details_for( $this->token );
+		} catch ( PHP_Merchant_Exception $e ) {
+			
+		}
 	}
 	
 	public function test_correct_response_is_returned_when_set_express_checkout_is_successful() {
@@ -240,7 +248,7 @@ class PHP_Merchant_Paypal_Express_Checkout_Test extends UnitTestCase
 	}
 	
 	public function test_correct_response_is_returned_when_set_express_checkout_fails() {
-		$mock_response = 'ACK=Failure&CORRELATIONID=224f0e4a32d14&TIMESTAMP=2011%2d07%2d05T13%253A23%253A52Z&VERSION=2%2e30000&BUILD=1%2e0006&L_ERRORCODE0=10412&L_SHORTMESSAGE0=Duplicate%20invoice&L_LONGMESSAGE0=Payment%20has%20already%20been%20made%20for%20this%20InvoiceID.&L_SEVERITYCODE0=3&L_ERRORCODE1=10010&L_SHORTMESSAGE1=Invalid%20Invoice&L_LONGMESSAGE1=Non-ASCII%20invoice%20id%20is%20not%20supported.&L_SEVERITYCODE1=3';
+		$mock_response = 'ACK=Failure&CORRELATIONID=224f0e4a32d14&TIMESTAMP=2011%2d07%2d05T13%253A23%253A52Z&VERSION=2%2e30000&BUILD=1%2e0006&TOKEN=EC%2d1OIN4UJGFOK54YFV&L_ERRORCODE0=10412&L_SHORTMESSAGE0=Duplicate%20invoice&L_LONGMESSAGE0=Payment%20has%20already%20been%20made%20for%20this%20InvoiceID.&L_SEVERITYCODE0=3&L_ERRORCODE1=10010&L_SHORTMESSAGE1=Invalid%20Invoice&L_LONGMESSAGE1=Non-ASCII%20invoice%20id%20is%20not%20supported.&L_SEVERITYCODE1=3';
 		$this->bogus->http->returnsByValue( 'post', $mock_response );
 		$response = $this->bogus->setup_purchase( $this->amount, $this->setup_purchase_options );
 		
