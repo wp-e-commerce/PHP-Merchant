@@ -2,9 +2,14 @@
 
 class PHP_Merchant_Paypal_Response extends PHP_Merchant_Response
 {
+	protected $params = array();
+	
 	public function __construct( $response_str ) {
 		parse_str( $response_str, $params );
-		$params = array_map( 'urldecode', $params );
+		$this->params = $params = array_map( 'urldecode', $params );
+		
+		if ( empty( $params ) || ! isset( $params['ACK'] ) )
+			throw new PHP_Merchant_Exception( PHPME_INVALID_RESPONSE, array(), $response_str );
 		
 		$this->options['datetime'] = $params['TIMESTAMP'];
 		
@@ -48,5 +53,9 @@ class PHP_Merchant_Paypal_Response extends PHP_Merchant_Response
 		} else {
 			$this->options['timestamp'] = time();
 		}
+	}
+	
+	public function get_params() {
+		return $this->params;
 	}
 }
