@@ -1,5 +1,6 @@
 <?php
 require_once( 'paypal.php' );
+require_once( 'paypal-express-checkout-response.php' );
 
 class PHP_Merchant_Paypal_Express_Checkout extends PHP_Merchant_Paypal
 {
@@ -131,7 +132,7 @@ class PHP_Merchant_Paypal_Express_Checkout extends PHP_Merchant_Paypal
 	public function get_details_for( $token ) {
 		$request = $this->build_get_details_request( $token );
 		$response_str = $this->commit( 'GetExpressCheckoutDetails', $request );
-		return new PHP_Merchant_Paypal_Response( $response_str );
+		return new PHP_Merchant_Paypal_Express_Checkout_Response( $response_str );
 	}
 	
 	public function purchase() {
