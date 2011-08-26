@@ -5,6 +5,8 @@ class PHP_Merchant_Paypal_Response extends PHP_Merchant_Response
 	protected $params = array();
 	
 	public function __construct( $response_str ) {
+		parent::__construct( $response_str );
+		
 		parse_str( $response_str, $params );
 		$this->params = $params = array_map( 'urldecode', $params );
 		
