@@ -10,6 +10,7 @@
 require_once( 'exception.php' );
 require_once( 'http.php' );
 require_once( 'response.php' );
+require_once( 'helpers.php' );
 
 abstract class PHP_Merchant
 {
