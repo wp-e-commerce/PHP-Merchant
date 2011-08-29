@@ -124,9 +124,14 @@ class PHP_Merchant_Paypal_Express_Checkout extends PHP_Merchant_Paypal
 		$response_str = $this->commit( 'GetExpressCheckoutDetails', $request );
 		return new PHP_Merchant_Paypal_Express_Checkout_Response( $response_str );
 	}
-	
-	public function purchase() {
 		
+	public function purchase( $amt, $options = array() ) {
+		$this->options = array_merge( $this->options, $options );
+		$this->requires( 'token', 'payer_id' );
+		$request = $this->build_checkout_request( 'Sale', $amt, $options );
+		
+		$response_str = $this->commit( 'DoExpressCheckoutPayment', $request );
+		return new PHP_Merchant_Paypal_Response( $response_str );
 	}
 
 	public function authorize() {
