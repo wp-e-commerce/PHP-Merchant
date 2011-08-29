@@ -186,7 +186,7 @@ class PHP_Merchant_Paypal_Express_Checkout_Test extends UnitTestCase
 		$this->assertEqual( $response->get( 'build'          ), '1.0006'               );
 	}
 	
-	public function test_correct_response_is_returned_when_get_express_checkout_details_for_uninitiated_transactions_is_successful() {
+	public function test_correct_response_is_returned_when_get_express_checkout_details_is_successful() {
 		$mock_response = 'TOKEN=EC%2d6EC97401PF4449255'.
 		
 		                 // API Info
@@ -196,6 +196,24 @@ class PHP_Merchant_Paypal_Express_Checkout_Test extends UnitTestCase
 		                 '&ACK=Success'.
 		                 '&VERSION=74%2e0'.
 		                 '&BUILD=2085867'.
+		
+		                 // Payer info
+						 '&EMAIL=visa_1304648966_per%40garyc40%2ecom'.
+		                 '&PAYERID=BC798KQ2QU22W'.
+		                 '&PAYERSTATUS=verified'.
+		                 '&FIRSTNAME=Test'.
+		                 '&LASTNAME=User'.
+		                 '&COUNTRYCODE=US'.
+		                 '&SHIPTONAME=Gary%20Cao'.
+		                 '&SHIPTOSTREET=1%20Infinite%20Loop'.
+		                 '&SHIPTOSTREET2=Apple%20Headquarter'.
+		                 '&SHIPTOCITY=Cupertino'.
+		                 '&SHIPTOSTATE=CA'.
+		                 '&SHIPTOZIP=95014'.
+		                 '&SHIPTOCOUNTRYCODE=US'.
+		                 '&SHIPTOPHONENUM=%28877%29%20412%2d7753'.
+		                 '&SHIPTOCOUNTRYNAME=United%20States'.
+		                 '&ADDRESSSTATUS=Unconfirmed'.
 		
 		                 // Legacy parameters (old API)
 		                 '&CURRENCYCODE=JPY'.
@@ -303,6 +321,31 @@ class PHP_Merchant_Paypal_Express_Checkout_Test extends UnitTestCase
 		$this->assertEqual( $response->get( 'correlation_id'  ), 'b5ae9bd5c735f'        );
 		$this->assertEqual( $response->get( 'version'         ), '74.0'                 );
 		$this->assertEqual( $response->get( 'build'           ), '2085867'              );
+		
+		// Payer Information
+		$mock_payer = (Object) array(
+			'email'        => 'visa_1304648966_per@garyc40.com',
+			'id'           => 'BC798KQ2QU22W',
+			'status'       => 'verified',
+			'first_name'   => 'Test',
+			'last_name'    => 'User',
+			'country'      => 'US',
+		);
+		$this->assertEqual( $response->get( 'payer' ), $mock_payer );
+		
+		// Shipping Address
+		$mock_shipping_address = array(
+			'name'         => 'Gary Cao',
+			'street'       => '1 Infinite Loop',
+			'street2'      => 'Apple Headquarter',
+			'city'         => 'Cupertino',
+			'state'        => 'CA',
+			'zip'          => '95014',
+			'country_code'  => 'US',
+			'country'      => 'United States',
+			'phone'        => '(877) 412-7753',
+		);
+		$this->assertEqual( $response->get( 'shipping_address' ), $mock_shipping_address );
 		
 		// Payment Information
 		$this->assertEqual( $response->get( 'currency' ), 'JPY' );
