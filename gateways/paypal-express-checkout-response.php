@@ -57,6 +57,29 @@ class PHP_Merchant_Paypal_Express_Checkout_Response extends PHP_Merchant_Paypal_
 		}
 		
 		$this->options['items'] = $items;
+		
+		if ( isset( $p['PAYERID'] ) )
+			$this->options['payer'] = phpme_map( $p, array(
+				'email'      => 'EMAIL',
+				'id'         => 'PAYERID',
+				'status'     => 'PAYERSTATUS',
+				'first_name' => 'FIRSTNAME',
+				'last_name'  => 'LASTNAME',
+				'country'    => 'COUNTRYCODE',
+			), 'Object' );
+		
+		if ( isset( $p['SHIPTONAME'] ) )
+			$this->options['shipping_address'] = phpme_map( $p, array(
+				'name'         => 'SHIPTONAME',
+				'street'       => 'SHIPTOSTREET',
+				'street2'      => 'SHIPTOSTREET2',
+				'city'         => 'SHIPTOCITY',
+				'state'        => 'SHIPTOSTATE',
+				'zip'          => 'SHIPTOZIP',
+				'country_code' => 'SHIPTOCOUNTRYCODE',
+				'country'      => 'SHIPTOCOUNTRYNAME',
+				'phone'        => 'SHIPTOPHONENUM',
+			) );
 	}
 	
 	public function is_checkout_not_initiated() {
