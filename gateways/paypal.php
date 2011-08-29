@@ -54,6 +54,10 @@ abstract class PHP_Merchant_Paypal extends PHP_Merchant
 		if ( ! empty( $action ) )
 			$this->request['METHOD'] = $action;
 		$this->request = array_merge( $this->request, $request );
+		foreach( $this->request as $key => $value ) {
+			if ( is_bool( $value ) )
+				$this->request[$key] = (int) $value;
+		}
 		return $this->request;
 	}
 	
