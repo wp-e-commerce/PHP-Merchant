@@ -8,13 +8,15 @@ class PHP_Merchant_Paypal_Express_Checkout_Test extends UnitTestCase
 	private $options;
 	private $amount;
 	private $token;
+	private $setup_purchase_options;
+	private $purchase_options;
 	
 	public function __construct() {
 		parent::__construct( 'PHP_Merchant_Paypal_Express_Checkout test cases' );
 		$this->amount = 15337;
 		$this->token = 'EC-6L77249383950130E';
 		// options to pass to the merchant class
-		$this->setup_purchase_options = array(
+		$this->setup_purchase_options = $this->purchase_options = array(
 			// API info
 			'return_url'        => 'http://example.com/return',
 			'cancel_url'        => 'http://example.com/cancel',
@@ -68,6 +70,11 @@ class PHP_Merchant_Paypal_Express_Checkout_Test extends UnitTestCase
 					'url'         => 'http://getshopped.org/extend/premium-upgrades/premium-upgrades/amazon-s3-plugin/',
 				),
 			),
+		);
+		
+		$this->purchase_options += array(
+			'token'    => 'EC-2JJ0893331633543K',
+			'payer_id' => 'BC798KQ2QU22W',
 		);
 	}
 	
@@ -146,6 +153,78 @@ class PHP_Merchant_Paypal_Express_Checkout_Test extends UnitTestCase
 		$this->bogus->http->expectOnce( 'post', array( $url, $args ) );
 		try {
 			$this->bogus->setup_purchase( $this->amount, $this->setup_purchase_options );
+		} catch ( PHP_Merchant_Exception $e ) {
+			
+		}
+	}
+	
+	public function test_correct_parameters_are_sent_when_do_express_checkout_payment() {
+		// set up expectations for mock objects
+		$url = 'https://api-3t.paypal.com/nvp';
+		
+		// how the request parameters should look like
+		$args = array(
+			// API info
+			'USER'         => 'sdk-three_api1.sdk.com',
+			'PWD'          => 'QFZCWN5HZM8VBG7Q',
+			'VERSION'      => '74.0',
+			'SIGNATURE'    => 'A-IzJhZZjhg29XQ2qnhapuwxIDzyAZQ92FRP5dqBzVesOkzbdUONzmOU',
+			'METHOD'       => 'DoExpressCheckoutPayment',
+ 			'RETURNURL'    => 'http://example.com/return',
+			'CANCELURL'    => 'http://example.com/cancel',
+			'ADDROVERRIDE' => 1,
+			
+			// Payer ID
+			'TOKEN'   => 'EC-2JJ0893331633543K',
+			'PAYERID' => 'BC798KQ2QU22W',
+			
+			// Shipping details
+			'PAYMENTREQUEST_0_SHIPTONAME'        => 'Gary Cao',
+			'PAYMENTREQUEST_0_SHIPTOSTREET'      => '1 Infinite Loop',
+			'PAYMENTREQUEST_0_SHIPTOSTREET2'     => 'Apple Headquarter',
+			'PAYMENTREQUEST_0_SHIPTOCITY'        => 'Cupertino',
+			'PAYMENTREQUEST_0_SHIPTOSTATE'       => 'CA',
+			'PAYMENTREQUEST_0_SHIPTOZIP'         => '95014',
+			'PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE' => 'USA',
+			'PAYMENTREQUEST_0_SHIPTOPHONENUM'    => '(877) 412-7753',
+			
+			// Payment info
+			'PAYMENTREQUEST_0_AMT'           => '15,337',
+			'PAYMENTREQUEST_0_CURRENCYCODE'  => 'JPY',
+			'PAYMENTREQUEST_0_PAYMENTACTION' => 'Sale',
+			'PAYMENTREQUEST_0_ITEMAMT'       => '13,700',
+			'PAYMENTREQUEST_0_SHIPPINGAMT'   => '1,500',
+			'PAYMENTREQUEST_0_TAXAMT'        => '137',
+			'PAYMENTREQUEST_0_DESC'          => 'Order for example.com',
+			'PAYMENTREQUEST_0_INVNUM'        => 'E84A90G94',
+			'PAYMENTREQUEST_0_NOTIFYURL'     => 'http://example.com/ipn',
+			
+			// Items
+			'L_PAYMENTREQUEST_0_NAME0'    => 'Gold Cart Plugin',
+			'L_PAYMENTREQUEST_0_AMT0'     => '4,000',
+			'L_PAYMENTREQUEST_0_QTY0'     => 1,
+			'L_PAYMENTREQUEST_0_DESC0'    => 'Gold Cart extends your WP e-Commerce store by enabling additional features and functionality, including views, galleries, store search and payment gateways.',
+			'L_PAYMENTREQUEST_0_TAXAMT0'  => '40',
+			'L_PAYMENTREQUEST_0_ITEMURL0' => 'http://getshopped.org/extend/premium-upgrades/premium-upgrades/gold-cart-plugin/',
+			
+			'L_PAYMENTREQUEST_0_NAME1'    => 'Member Access Plugin',
+			'L_PAYMENTREQUEST_0_AMT1'     => '5,000',
+			'L_PAYMENTREQUEST_0_QTY1'     => 1,
+			'L_PAYMENTREQUEST_0_DESC1'    => 'Create pay to view subscription sites',
+			'L_PAYMENTREQUEST_0_TAXAMT1'  => '50',
+			'L_PAYMENTREQUEST_0_ITEMURL1' => 'http://getshopped.org/extend/premium-upgrades/premium-upgrades/member-access-plugin/',
+			
+			'L_PAYMENTREQUEST_0_NAME2'    => 'Amazon S3',
+			'L_PAYMENTREQUEST_0_AMT2'     => '4,700',
+			'L_PAYMENTREQUEST_0_QTY2'     => 1,
+			'L_PAYMENTREQUEST_0_DESC2'    => 'This Plugin allows downloadable products that you have for sale on your WP e-Commerce site to be hosted within Amazon S3.',
+			'L_PAYMENTREQUEST_0_TAXAMT2'  => '47',
+			'L_PAYMENTREQUEST_0_ITEMURL2' => 'http://getshopped.org/extend/premium-upgrades/premium-upgrades/amazon-s3-plugin/',
+		);
+		
+		$this->bogus->http->expectOnce( 'post', array( $url, $args ) );
+		try {
+			$this->bogus->purchase( $this->amount, $this->purchase_options );
 		} catch ( PHP_Merchant_Exception $e ) {
 			
 		}
