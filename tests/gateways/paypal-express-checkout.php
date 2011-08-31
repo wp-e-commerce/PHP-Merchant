@@ -13,7 +13,6 @@ class PHP_Merchant_Paypal_Express_Checkout_Test extends UnitTestCase
 	
 	public function __construct() {
 		parent::__construct( 'PHP_Merchant_Paypal_Express_Checkout test cases' );
-		$this->amount = 15337;
 		$this->token = 'EC-6L77249383950130E';
 		// options to pass to the merchant class
 		$this->setup_purchase_options = $this->purchase_options = array(
@@ -36,6 +35,7 @@ class PHP_Merchant_Paypal_Express_Checkout_Test extends UnitTestCase
 			
 			// Payment info
 			'currency'    => 'JPY',
+			'amount'      => 15337,
 			'subtotal'    => 13700,
 			'shipping'    => 1500,
 			'tax'         => 137,
@@ -152,7 +152,7 @@ class PHP_Merchant_Paypal_Express_Checkout_Test extends UnitTestCase
 		
 		$this->bogus->http->expectOnce( 'post', array( $url, $args ) );
 		try {
-			$this->bogus->setup_purchase( $this->amount, $this->setup_purchase_options );
+			$this->bogus->setup_purchase( $this->setup_purchase_options );
 		} catch ( PHP_Merchant_Exception $e ) {
 			
 		}
@@ -224,7 +224,7 @@ class PHP_Merchant_Paypal_Express_Checkout_Test extends UnitTestCase
 		
 		$this->bogus->http->expectOnce( 'post', array( $url, $args ) );
 		try {
-			$this->bogus->purchase( $this->amount, $this->purchase_options );
+			$this->bogus->purchase( $this->purchase_options );
 		} catch ( PHP_Merchant_Exception $e ) {
 			
 		}
@@ -253,7 +253,7 @@ class PHP_Merchant_Paypal_Express_Checkout_Test extends UnitTestCase
 	public function test_correct_response_is_returned_when_set_express_checkout_is_successful() {
 		$mock_response = 'ACK=Success&CORRELATIONID=224f0e4a32d14&TIMESTAMP=2011%2d07%2d05T13%253A23%253A52Z&VERSION=2%2e30000&BUILD=1%2e0006&TOKEN=EC%2d1OIN4UJGFOK54YFV';
 		$this->bogus->http->returnsByValue( 'post', $mock_response );
-		$response = $this->bogus->setup_purchase( $this->amount, $this->setup_purchase_options );
+		$response = $this->bogus->setup_purchase( $this->setup_purchase_options );
 		
 		$this->assertTrue( $response->is_successful() );
 		$this->assertFalse( $response->has_errors() );
@@ -468,7 +468,7 @@ class PHP_Merchant_Paypal_Express_Checkout_Test extends UnitTestCase
 	public function test_correct_response_is_returned_when_set_express_checkout_fails() {
 		$mock_response = 'ACK=Failure&CORRELATIONID=224f0e4a32d14&TIMESTAMP=2011%2d07%2d05T13%253A23%253A52Z&VERSION=2%2e30000&BUILD=1%2e0006&TOKEN=EC%2d1OIN4UJGFOK54YFV&L_ERRORCODE0=10412&L_SHORTMESSAGE0=Duplicate%20invoice&L_LONGMESSAGE0=Payment%20has%20already%20been%20made%20for%20this%20InvoiceID.&L_SEVERITYCODE0=3&L_ERRORCODE1=10010&L_SHORTMESSAGE1=Invalid%20Invoice&L_LONGMESSAGE1=Non-ASCII%20invoice%20id%20is%20not%20supported.&L_SEVERITYCODE1=3';
 		$this->bogus->http->returnsByValue( 'post', $mock_response );
-		$response = $this->bogus->setup_purchase( $this->amount, $this->setup_purchase_options );
+		$response = $this->bogus->setup_purchase( $this->setup_purchase_options );
 		
 		$this->assertFalse( $response->is_successful() );
 		$this->assertTrue( $response->has_errors() );
@@ -499,7 +499,7 @@ class PHP_Merchant_Paypal_Express_Checkout_Test extends UnitTestCase
 		$mock_response = 'ACK=SuccessWithWarning&CORRELATIONID=224f0e4a32d14&TIMESTAMP=2011%2d07%2d05T13%253A23%253A52Z&VERSION=2%2e30000&BUILD=1%2e0006&TOKEN=EC%2d1OIN4UJGFOK54YFV&L_ERRORCODE0=10412&L_SHORTMESSAGE0=Duplicate%20invoice&L_LONGMESSAGE0=Payment%20has%20already%20been%20made%20for%20this%20InvoiceID.&L_SEVERITYCODE0=3&L_ERRORCODE1=10010&L_SHORTMESSAGE1=Invalid%20Invoice&L_LONGMESSAGE1=Non-ASCII%20invoice%20id%20is%20not%20supported.&L_SEVERITYCODE1=3';
 		
 		$this->bogus->http->returnsByValue( 'post', $mock_response );
-		$response = $this->bogus->setup_purchase( $this->amount, $this->setup_purchase_options );
+		$response = $this->bogus->setup_purchase( $this->setup_purchase_options );
 		
 		$this->assertTrue( $response->is_successful() );
 		$this->assertTrue( $response->has_errors() );

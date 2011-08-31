@@ -8,9 +8,9 @@ class PHP_Merchant_Paypal_Express_Checkout extends PHP_Merchant_Paypal
 		parent::__construct( $options );
 	}
 	
-	protected function add_payment( $action, $amt ) {		
+	protected function add_payment( $action ) {		
 		$request = array(
-			'PAYMENTREQUEST_0_AMT'           => $this->format( $amt ),
+			'PAYMENTREQUEST_0_AMT'           => $this->format( $this->options['amount'] ),
 			'PAYMENTREQUEST_0_CURRENCYCODE'  => $this->options['currency'],
 			'PAYMENTREQUEST_0_PAYMENTACTION' => $action,
 		);
@@ -83,7 +83,7 @@ class PHP_Merchant_Paypal_Express_Checkout extends PHP_Merchant_Paypal
 		return $request;
 	}
 	
-	protected function build_checkout_request( $action, $amt, $options = array() ) {	
+	protected function build_checkout_request( $action, $options = array() ) {	
 		$request = array(
 			'RETURNURL' => $this->options['return_url'],
 			'CANCELURL' => $this->options['cancel_url'],
@@ -100,14 +100,14 @@ class PHP_Merchant_Paypal_Express_Checkout extends PHP_Merchant_Paypal
 		if ( ! empty( $this->options['shipping'] ) && ! empty( $this->options['address_override'] ) )
 			$request += $this->add_address();
 		
-		$request += $this->add_payment( $action, $amt );
+		$request += $this->add_payment( $action );
 		return $request;
 	}
 	
-	public function setup_purchase( $amt, $options = array() ) {
+	public function setup_purchase( $options = array() ) {
 		$this->options = array_merge( $this->options, $options );
-		$this->requires( 'return_url', 'cancel_url' );
-		$request = $this->build_checkout_request( 'Sale', $amt, $options );
+		$this->requires( 'amount', 'return_url', 'cancel_url' );
+		$request = $this->build_checkout_request( 'Sale', $options );
 
 		$response_str = $this->commit( 'SetExpressCheckout', $request );
 		return new PHP_Merchant_Paypal_Response( $response_str );
@@ -125,10 +125,10 @@ class PHP_Merchant_Paypal_Express_Checkout extends PHP_Merchant_Paypal
 		return new PHP_Merchant_Paypal_Express_Checkout_Response( $response_str );
 	}
 		
-	public function purchase( $amt, $options = array() ) {
+	public function purchase( $options = array() ) {
 		$this->options = array_merge( $this->options, $options );
-		$this->requires( 'token', 'payer_id' );
-		$request = $this->build_checkout_request( 'Sale', $amt, $options );
+		$this->requires( 'amount', 'token', 'payer_id' );
+		$request = $this->build_checkout_request( 'Sale', $options );
 		
 		$response_str = $this->commit( 'DoExpressCheckoutPayment', $request );
 		return new PHP_Merchant_Paypal_Response( $response_str );

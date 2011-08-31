@@ -75,8 +75,8 @@ abstract class PHP_Merchant
 		return number_format( $amt, $dec );
 	}
 	
-	public function purchase( $amt, $options = array() ) {
-		
+	public function purchase( $options = array() ) {
+		$this->requires( 'amount' );
 	}
 	
 	public function authorize() {
