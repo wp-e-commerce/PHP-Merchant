@@ -1,0 +1,29 @@
+---
+layout: default
+title: Installation Instructions
+---
+
+<section>
+	<h3>Drop-in installation</h3>
+	<p>Installing PHP Merchant is easy. Simply download the source and put it in a folder within your PHP site. You can <a href="https://github.com/instinct/PHP-Merchant">download PHP Merchant from Github</a>.</p>
+	<p>The downloaded package will have the following sub-folders:</p>
+	<ul>
+		<li><code>common</code>: contains common classes and functions that are used in all payment gateway classes. You only need to <code>require 'common/php-merchant.php'</code> to include all these necessary components.</li>
+		<li><code>gateways</code>: contains individual gateway implementations. When you need to use a payment gateway, simply <code>require 'gateways/{gateway-name}.php'</code>.</li>
+		<li><code>tests</code>: contains unit tests. This might be useful if you want to check the stability of current code base (it should pass all tests).</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Cloning our github repository</h3>
+	<p><a href="http://git-scm.com">Git</a> is the version control system that we use to manage our codebase. If you know your way around git, you can easily get updates via github with only a few commands.</p>
+	<p>To clone our read-only repository:</p>
+	{% highlight bash linenos %}
+cd /path/to/your/php/site
+git clone git://github.com/instinct/PHP-Merchant.git{% endhighlight %}
+	<p>You should only use code on our <code>master</code> branch for production sites. Code on <code>master</code> is guaranteed to have better unit-test coverage and integration testing.</p>
+	<p>Run this every time you want to get update from our <code>master</code> branch:</p>
+	{% highlight bash linenos %}
+cd /path/to/your/php/site/PHP-Merchant
+git pull origin master{% endhighlight %}
+</section>
