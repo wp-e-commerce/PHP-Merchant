@@ -7,12 +7,12 @@
 			function(){
 				toc.height(tocHeight);
 				toc.removeClass('hidden');
-				$(this).html('Table of Contents &uarr;')
+				$('header > a[href=#toc]').html('Table of Contents &uarr;')
 			},
 			function(){
 				toc.height(0);
 				toc.addClass('hidden');
-				$(this).html('Table of Contents &darr;')
+				$('header > a[href=#toc]').html('Table of Contents &darr;')
 			}
 		);
 	});
