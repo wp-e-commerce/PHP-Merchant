@@ -1,0 +1,161 @@
+h1, h2, h3, h4, body, ul, pre { margin:0; padding:0 }
+
+body {
+	color:#000;
+	font-family:sans-serif;
+	font-size:14px;
+	line-height:24px;
+	margin:0;
+}
+
+a { color:#0134c5; text-decoration:none }
+
+h1, h2 {
+	font-family:"HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", sans-serif;
+	font-weight:normal;
+}
+
+h1 {
+	display:none; /* Until we have a proper logo */
+}
+
+h2 {
+	font-size:36px;
+	line-height:72px;
+}
+	h2 a {
+		color:#e13300; text-decoration:none;
+	}
+
+h3, h4 {
+	font-family:Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
+	font-weight:normal;
+	line-height:24px;
+}
+
+h3 { font-size:18px; }
+
+h4 { font-size:16px; }
+
+code {
+	background:#efefef;
+}
+
+nav {
+	overflow:hidden;
+}
+
+	nav div {
+		float:left;
+		padding:20px 0;
+		width:25%;
+	}
+
+header hgroup, header nav, article { padding:0 40px; }
+
+header {
+	box-shadow: 0 5px 5px #ccc;
+	background:#fff;
+	position:relative;
+	width:100%;
+}
+
+	header nav {
+		font-size:12px;
+		line-height:1.4em;
+		border-bottom:1px dashed #ccc;
+
+		-webkit-transition:0.2s ease-in-out;
+	}
+		header nav.hidden {
+			height:0;
+			border-bottom:none;
+		}
+
+		header nav h4 {
+			font-family:sans-serif;
+			font-size:14px;
+			font-weight:bold;
+		}
+
+		header nav section {
+			margin-bottom:18px;
+		}
+
+		header nav li {
+			list-style-type:none;
+			padding-left:10px;
+		}
+
+		header nav li a {
+			text-decoration:none;
+		}
+
+		header nav li a:hover {
+			text-decoration:underline;
+		}
+
+	#toc-link {
+		line-height:72px;
+		font-size:11px;
+		position:absolute;
+		bottom:0;
+		right:40px;
+	}
+
+article {
+	padding-top:5px;
+}
+	article section {
+		border-bottom:2px solid #efefef;
+		padding-top:18px;
+	}
+		article section:first-child {
+			border-top:none;
+		}
+
+		article section p, article section ul  {
+			margin-bottom:18px;
+		}
+
+		article section ul {
+			list-style-position:inside;
+			margin-left:15px;
+		}
+
+		article nav {
+			border-bottom:2px solid #efefef;
+		}
+
+		article nav section {
+			border-bottom:none;
+		}
+
+		div.highlight {
+			border: 1px solid #ccc;
+			font-size:12px;
+			line-height:20px;
+		}
+
+		div.highlight pre {
+			overflow-x:scroll;
+			overflow-y:hidden;
+		}
+
+		div.highlight code {
+			background:#fff;
+			line-height:15px;
+		}
+
+		div.highlight .lineno {
+			background:#efefef;
+			border-right:1px solid #ccc;
+			color:#999;
+			padding:5px;
+		}
+
+footer {
+	font-size:11px;
+	line-height:36px;
+	text-align:center;
+}

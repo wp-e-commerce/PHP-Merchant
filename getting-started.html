@@ -1,0 +1,77 @@
+---
+layout: default
+title: Getting Started
+---
+<section>
+	<h3>How to use PHP Merchant</h3>
+
+	<p>PHP Merchant is suitable for dealing with one or multiple payment gateways in a PHP application.</p>
+
+	<p>Below is the sample code that is actually used in another project. Note that if you want to use another gateway, you'll only need to replace <code>new PHP_Merchant_Paypal_Express()</code> with the proper class of your choice.</p>
+
+	{% highlight php linenos startinline %}
+$api_info = array(
+    'return_url'        => 'http://example.com/return',
+    'cancel_url'        => 'http://example.com/cancel',
+    'address_override'  => true,
+    'api_username'      => 'sdk-three_api1.sdk.com',
+    'api_password'      => 'QFZCWN5HZM8VBG7Q',
+    'api_signature'     => 'A-IzJhZZjhg29XQ2qnhapuwxIDzyAZQ92FRP5dqBzVesOkzbdUONzmOU',
+);
+$gateway = new PHP_Merchant_Paypal_Express( $api_info );
+$payment_options = array(
+    // Shipping details
+    'shipping_address' => array(
+        'name'    => 'Gary Cao',
+        'street'  => '1 Infinite Loop',
+        'street2' => 'Apple Headquarter',
+        'city'    => 'Cupertino',
+        'state'   => 'CA',
+        'country' => 'USA',
+        'zip'     => '95014',
+        'phone'   => '(877) 412-7753',
+    ),
+
+    // Payment info
+    'token'       => 'EC-2JJ0893331633543K',
+    'payer_id'    => 'BC798KQ2QU22W',
+    'currency'    => 'JPY',
+    'amount'      => 15337,
+    'subtotal'    => 13700,
+    'shipping'    => 1500,
+    'tax'         => 137,
+    'description' => 'Order for example.com',
+    'invoice'     => 'E84A90G94',
+    'notify_url'  => 'http://example.com/ipn',
+
+    // Items
+    'items' => array(
+        array(
+            'name'        => 'Gold Cart Plugin',
+            'description' => 'Gold Cart extends your WP e-Commerce store by enabling additional features and functionality, including views, galleries, store search and payment gateways.',
+            'amount'      => 4000,
+            'quantity'    => 1,
+            'tax'         => 40,
+            'url'         => 'http://getshopped.org/extend/premium-upgrades/premium-upgrades/gold-cart-plugin/',
+        ),
+        array(
+            'name'        => 'Member Access Plugin',
+            'description' => 'Create pay to view subscription sites',
+            'amount'      => 5000,
+            'quantity'    => 1,
+            'tax'         => 50,
+            'url'         => 'http://getshopped.org/extend/premium-upgrades/premium-upgrades/member-access-plugin/',
+        ),
+        array(
+            'name'        => 'Amazon S3',
+            'description' => 'This Plugin allows downloadable products that you have for sale on your WP e-Commerce site to be hosted within Amazon S3.',
+            'amount'      => 4700,
+            'quantity'    => 1,
+            'tax'         => 47,
+            'url'         => 'http://getshopped.org/extend/premium-upgrades/premium-upgrades/amazon-s3-plugin/',
+        ),
+    ),
+);
+
+$gateway->purchase( $payment_options );{% endhighlight %}
+</section>

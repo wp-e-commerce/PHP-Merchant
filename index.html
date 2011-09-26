@@ -1,1 +1,37 @@
-My Github Page
+---
+layout: default
+title: Documentation Home
+---
+
+<section>
+	<h3>What is PHP Merchant?</h3>
+	<p>PHP Merchant is a PHP library that lets developers easily integrate multiple payment gateways into their PHP applications. This PHP library was inspired by <a href="https://github.com/Shopify/active_merchant/">active_merchant</a>, a payment abstraction library written in Ruby.</p>
+</section>
+
+<section>
+	<h3>Who is PHP Merchant for?</h3>
+	<p>PHP Merchant is right for you if you want a library that:</p>
+	<ul>
+		<li>provides a consistent programming interface across various payment gateway providers.</li>
+		<li>minimizes the amount of time to learn to use the API for various payment gateways.</li>
+		<li>minimizes the amount of code you need to write in order to process payments.</li>
+		<li>is being used in real projects and proven to be stable.</li>
+		<li>has clear and thorough documentation.</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Why use PHP Merchant?</h3>
+	<p>The goal of PHP Merchant is to provide a consistent API across various payment gateways, so that you won't have to deal with each gateway's quirks. For instance, with Paypal IPN, 'payment_status' could sometimes be 'Canceled_Reversal', but in Paypal Express Checkout, it's 'Canceled-Reversal'. These inconsistent details can be very confusing and it's hard to memorize them all. PHP Merchant helps by providing a consistent abstraction across all supported payment gateways to make your job faster and easier.</p>
+	<p>With PHP Merchant, payment gateway API are categorized into 7 types of functionality:</p>
+	<ul>
+		<li>Purchase</li>
+		<li>Authorize</li>
+		<li>Capture</li>
+		<li>Void</li>
+		<li>Credit</li>
+		<li>Recurring</li>
+		<li>Card Store</li>
+	</ul>
+	<p>There might be unique functionalities to some payment gateways that are also supported (for instance: Setup Purchase (SetExpressCheckout) for Paypal Express Checkout). There will be documentation for each payment gateway to point out those little details.</p>
+</section>
