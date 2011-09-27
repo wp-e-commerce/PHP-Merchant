@@ -2,15 +2,15 @@ h1, h2, h3, h4, body, ul, pre { margin:0; padding:0 }
 
 body {
 	color:#000;
-	font-family:sans-serif;
+	font-family:"Helvetica Neue", Helvetica, Arial, Verdana, sans-serif;
 	font-size:14px;
-	line-height:24px;
+	line-height:18px;
 	margin:0;
 }
 
 a { color:#0134c5; text-decoration:none }
 
-h1, h2 {
+h1, h2, h3 {
 	font-family:"HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", sans-serif;
 	font-weight:normal;
 }
@@ -27,15 +27,14 @@ h2 {
 		color:#e13300; text-decoration:none;
 	}
 
-h3, h4 {
-	font-family:Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
-	font-weight:normal;
-	line-height:24px;
+h3 {
+/*	font-family:Georgia, "Times New Roman", "Bitstream Charter", Times, serif; */
+/*	font-weight:normal; */
 }
 
-h3 { font-size:18px; }
+h3 { font-size:24px; line-height:36px; }
 
-h4 { font-size:16px; }
+h4 { font-size:18px; margin-top:18px; line-height:16px; }
 
 code {
 	background:#efefef;
@@ -67,7 +66,6 @@ table {
 		text-align:left;
 		width:23%;
 	}
-
 
 	tbody tr:hover td, tbody tr:hover th {
 		background-color:#ffffd4;
@@ -139,18 +137,25 @@ article {
 	margin-top:23px;
 }
 	article section {
-		border-top:2px solid #efefef;
 		margin-top:18px;
 	}
-		article section h3 {
-			margin-top:18px;
+		article h3 {
+			border-bottom:1px solid #ccc;
+			margin-top:24px;
+			margin-bottom:18px;
 		}
+
+		article h4 {
+			margin-bottom:9px;
+		}
+
 		article section:first-child {
 			border-top:none;
 		}
 
 		article p, article ul  {
 			margin-bottom:18px;
+			margin-top:0;
 		}
 
 		article section ul {
