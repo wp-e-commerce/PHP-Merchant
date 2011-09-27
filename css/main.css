@@ -27,11 +27,6 @@ h2 {
 		color:#e13300; text-decoration:none;
 	}
 
-h3 {
-/*	font-family:Georgia, "Times New Roman", "Bitstream Charter", Times, serif; */
-/*	font-weight:normal; */
-}
-
 h3 { font-size:24px; line-height:36px; }
 
 h4 { font-size:18px; margin-top:18px; line-height:16px; }
@@ -139,14 +134,13 @@ article {
 	article section {
 		margin-top:18px;
 	}
-		article h3 {
-			border-bottom:1px solid #ccc;
-			margin-top:24px;
+		article h3, h4 {
 			margin-bottom:18px;
+			margin-top:24px;
 		}
 
-		article h4 {
-			margin-bottom:9px;
+		article h3 {
+			border-bottom:1px solid #ccc;
 		}
 
 		article section:first-child {
@@ -175,7 +169,6 @@ article {
 		}
 
 		div.highlight pre {
-			overflow-x:scroll;
 			overflow-y:hidden;
 		}
 
