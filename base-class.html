@@ -1,0 +1,165 @@
+---
+layout: default
+title: Base Gateway Class
+---
+
+<p>The base gateway class <code>PHP_Merchant</code> is the parent class of all payment gateway implementations. As a result, constructor, some methods and properties are common among various gateway classes.</p>
+
+<p>Note that <code>PHP_Merchant</code> is an <code>abstract</code> class, which means you can't create instances directly from this class, but only from its subclasses.</p>
+
+<section>
+	<h3>Constructing an instance</h3>
+
+	<p>Let's say we have a dummy payment gateway called <code>PHP_Merchant_Test_Gateway</code>. We can get a gateway instance by just doing this:</p>
+
+{% highlight php linenos startinline %}
+$gateway = new PHP_Merchant_Test_Gateway();
+{% endhighlight %}
+
+	<p>You can also pass in an array of options (API connection information, payment information) into the constructor as well:</p>
+
+{% highlight php linenos startinline %}
+$api_info = array(
+    'api_username'  => 'sdk-three_api1.sdk.com',
+    'api_password'  => 'QFZCWN5HZM8VBG7Q',
+    'api_signature' => 'A-IzJhZZjhg29XQ2qnhapuwxIDzyAZQ92FRP5dqBzVesOkzbdUONzmOU',
+	'amount'        => 1234,
+	'currency'      => 'USD',
+);
+$gateway = new PHP_Merchant_Paypal_Express_Checkout( $api_info );
+{% endhighlight %}
+
+	<p>More information about payment gateway options below.</p>
+</section>
+
+<section>
+	<h3>Executing payment gateway operations</h3>
+
+	<p>There are <a href="getting-started.html#basic-operations">seven basic operations</a> that you can execute on your payment gateway object. These corresponds to 7 methods that you can call. If the operation you call is not supported on a particular gateway, an exception will be thrown. These operation methods will return <a href="response.html">a Response object</a>.</p>
+
+	<p>For example, to execute a <code>Purchase</code> operation:</p>
+
+{% highlight php linenos startinline %}
+// if you already set the payment gateway options in the constructor
+$response = $gateway->purchase();
+
+// or, if you haven't set the payment gateway options, or want to overwrite them
+$response = $gateway->purchase( array(
+	'api_username'  => 'sdk-three_api1.sdk.com',
+    'api_password'  => 'QFZCWN5HZM8VBG7Q',
+    'api_signature' => 'A-IzJhZZjhg29XQ2qnhapuwxIDzyAZQ92FRP5dqBzVesOkzbdUONzmOU',
+	'amount'        => 1234,
+	'currency'      => 'USD',
+) );
+{% endhighlight %}
+
+	<p>See the <a href="response.html">documentation regarding Response class</a> to know how to process the response.</p>
+</section>
+
+<section>
+	<h3>Payment Gateway Options</h3>
+	<p>The information relating to the payment you want to make is referred to as "Payment Gateway Options". This includes API credentials, shipping and billing addresses, item details etc.</p>
+	<p>The common payment gateway options used in all payment gateways are listed below. Note that in all the code example, we assume that the <code>$options</code> variable is an array containing all options so that we can pass that into the payment gateway later.</p>
+
+	<h4>API credentials</h4>
+	<p>Most payment gateway APIs require you to register for a pair of api_username and api_password, and / or API secret key (signature). For example:</p>
+{% highlight php linenos startinline %}
+$api_options = array(
+	'api_username'  => 'sdk-three_api1.sdk.com',
+	'api_password'  => 'QFZCWN5HZM8VBG7Q',
+	'api_signature' => 'A-IzJhZZjhg29XQ2qnhapuwxIDzyAZQ92FRP5dqBzVesOkzbdUONzmOU',
+);
+$options += $api_options; // merge API options into an array containing all options
+{% endhighlight %}
+
+	<h4>Payment Information</h4>
+	<p>Payment information is usually general information about the order, including <a href="http://en.wikipedia.org/wiki/ISO_4217">currency</a>, total amount, subtotal, shipping, description, invoice number and discount.</p>
+	<p>If no currency is specified, USD is used.</p>
+	<p>Example:</p>
+{% highlight php linenos startinline %}
+$payment_options = array(
+	'currency'    => 'JPY',
+	'amount'      => 15337,
+	'subtotal'    => 13700,
+	'shipping'    => 1500,
+	'tax'         => 137,
+	'description' => 'Order for example.com',
+	'invoice'     => 'E84A90G94',
+	'notify_url'  => 'http://example.com/ipn',
+);
+$options += $payment_options; // merge API options into an array containing all options
+{% endhighlight %}
+
+	<h4>Item Details</h4>
+	<p>If you want to include line item details, assign the 'items' field of the options array with yet another array of items.</p>
+	<p>Each item is itself an array containing information such as name, description, amount, quantity, tax and shipping.</p>
+	<p>Note that some gateways enforce strict validation that requires the order's <code>subtotal</code> option to equal to the sum of individual item 'amount'.</p>
+	<p>For example:</p>
+{% highlight php linenos startinline %}
+// specify key "items" of the $options array
+$options['items'] = array(
+	array(
+		'name'        => 'Gold Cart Plugin',
+		'description' => 'Gold Cart extends your WP e-Commerce store by enabling additional features and functionality, including views, galleries, store search and payment gateways.',
+		'amount'      => 4000,
+		'quantity'    => 1,
+		'tax'         => 40,
+	),
+	array(
+		'name'        => 'Member Access Plugin',
+		'description' => 'Create pay to view subscription sites',
+		'amount'      => 5000,
+		'quantity'    => 1,
+		'tax'         => 50,
+	),
+	array(
+		'name'        => 'Amazon S3',
+		'description' => 'This Plugin allows downloadable products that you have for sale on your WP e-Commerce site to be hosted within Amazon S3.',
+		'amount'      => 4700,
+		'quantity'    => 1,
+		'tax'         => 47,
+	),
+);
+{% endhighlight %}
+
+	<h4>Shipping and Billing Address</h4>
+	<p>As with item details, shipping and billing address needs to be passed into options as arrays as well.</p>
+	<p>Example:</p>
+{% highlight php linenos startinline %}
+$options['shipping_address'] = array(
+	'name'    => 'Gary Cao',
+	'street'  => '1 Infinite Loop',
+	'street2' => 'Apple Headquarter',
+	'city'    => 'Cupertino',
+	'state'   => 'CA',
+	'country' => 'USA',
+	'zip'     => '95014',
+	'phone'   => '(877) 412-7753',
+);
+
+// in this example, billing address is the same as shipping address
+$options['billing_address'] = $options['shipping_address'];
+{% endhighlight %}
+
+	<h4>Passing Options into Payment Gateways</h4>
+
+	<p>To pass options into your chosen payment gateway, there are four ways.</p>
+
+	<p>You can pass options when instantializing payment gateway object:</p>
+
+{% highlight php linenos startinline %}
+$gateway = new PHP_Merchant_Dummy_Gateway( $options );
+{% endhighlight %}
+
+	<p>You can pass options when calling payment gateway operations. Options that are already set using other methods will be overwritten.</p>
+
+{% highlight php linenos startinline %}
+$gateway->purchase( $options );
+{% endhighlight %}
+
+	<p>You can also call <code>set_option()</code> to set single option, or <code>set_options</code> to set multiple options using an array. This will also overwrite any options that are set previously.</p>
+{% highlight php linenos startinline %}
+$gateway->set_option( 'shipping_address', $shipping_options );
+$gateway->set_options( $api_options );
+{% endhighlight %}
+</section>
