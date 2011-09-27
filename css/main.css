@@ -47,7 +47,6 @@ nav {
 
 	nav div {
 		float:left;
-		padding:20px 0;
 		width:25%;
 	}
 
@@ -64,9 +63,11 @@ header {
 		font-size:12px;
 		line-height:1.4em;
 		border-bottom:1px dashed #ccc;
-
-		-webkit-transition:0.2s ease-in-out;
 	}
+		header nav div {
+			margin:20px 0;
+		}
+
 		header nav.hidden {
 			height:0;
 			border-bottom:none;
@@ -104,17 +105,20 @@ header {
 	}
 
 article {
-	padding-top:5px;
+	margin-top:23px;
 }
 	article section {
-		border-bottom:2px solid #efefef;
-		padding-top:18px;
+		border-top:2px solid #efefef;
+		margin-top:18px;
 	}
+		article section h3 {
+			margin-top:18px;
+		}
 		article section:first-child {
 			border-top:none;
 		}
 
-		article section p, article section ul  {
+		article p, article ul  {
 			margin-bottom:18px;
 		}
 
@@ -123,18 +127,15 @@ article {
 			margin-left:15px;
 		}
 
-		article nav {
-			border-bottom:2px solid #efefef;
-		}
-
 		article nav section {
-			border-bottom:none;
+			border-top:none;
 		}
 
 		div.highlight {
 			border: 1px solid #ccc;
 			font-size:12px;
 			line-height:20px;
+			margin-bottom:18px;
 		}
 
 		div.highlight pre {
@@ -149,13 +150,18 @@ article {
 
 		div.highlight .lineno {
 			background:#efefef;
-			border-right:1px solid #ccc;
+			border-right:1px solid #dfdfdf;
 			color:#999;
-			padding:5px;
+			display:inline-block;
+			min-width:15px;
+			padding:3px 5px;
+			text-align:right;
 		}
 
 footer {
+	border-top:2px solid #efefef;
 	font-size:11px;
 	line-height:36px;
+	margin:18px 40px;
 	text-align:center;
 }
