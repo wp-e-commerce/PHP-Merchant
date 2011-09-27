@@ -50,6 +50,37 @@ nav {
 		width:25%;
 	}
 
+table {
+	width:100%;
+	border:1px solid #ccc;
+	border-collapse:collapse;
+	border-left:none;
+}
+	th, td {
+		border-left:1px solid #ccc;
+		padding:5px;
+		text-align:center;
+		width:11%;
+	}
+
+	tr th:first-child, tr td:first-child {
+		text-align:left;
+		width:23%;
+	}
+
+
+	tbody tr:hover td, tbody tr:hover th {
+		background-color:#ffffd4;
+	}
+
+	th[scope=row] {
+		font-weight:normal;
+	}
+
+	th[scope=col] {
+		border-bottom:1px solid #efefef;
+	}
+
 header hgroup, header nav, article { padding:0 40px; }
 
 header {

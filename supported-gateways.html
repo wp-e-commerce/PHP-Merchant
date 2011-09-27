@@ -1,0 +1,56 @@
+---
+layout: default
+title: Supported Gateways
+---
+
+<section>
+	<h3>Basic Features</h3>
+	<p>Supported operations of payment gateways can be categorized into 7 types:</p>
+	<ul>
+		<li><strong>Purchase</strong>: to process a transaction. Authorization of fund transfer and capture is done simultaneously.</li>
+		<li><strong>Authorize</strong>: to authorize a payment in advance. This is useful for delayed order fulfillment process.</li>
+		<li><strong>Capture</strong>: to capture either a partial amount or the full authorization amount.</li>
+		<li><strong>Void</strong>: to void a previous authorization.</li>
+		<li><strong>Credit</strong>: to refund a customer for a transaction that was processed and successfully settled through the payment gateway.</li>
+		<li><strong>Recurring</strong>: to make a recurring payment (e.g. monthly subscription).</li>
+		<li><strong>Card Store</strong>: store the credit card (and/or other payment) information.</li>
+	</ul>
+	<p>PHP Merchant provides an abstract API consistent with the above categorization, so that you won't have to worry about the deep technical details about how payment requests are made.</p>
+</section>
+
+<section>
+	<h3>Feature Matrix</h3>
+	<p>The following feature matrix shows list of supported payment gateways and their available operations.</p>
+	<p>
+		Legend:<br />
+		<small>&Omicron;: Fully supported</small><br />
+		<small>&Delta;: Supported by gateway but <a title="This means the community needs your contribution!" href="contributing.html">not yet supported by PHP Merchant</a></small><br />
+		<small>&mdash;: Not supported</small>
+	</p>
+	<table>
+		<thead>
+			<tr>
+				<th scope="col">Name</th>
+				<th scope="col">Purchase</th>
+				<th scope="col">Authorize</th>
+				<th scope="col">Capture</th>
+				<th scope="col">Void</th>
+				<th scope="col">Credit</th>
+				<th scope="col">Recurring</th>
+				<th scope="col">Card Store</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th scope="row">Paypal Express Checkout</th>
+				<td>&Omicron;</td>
+				<td>&Delta;</td>
+				<td>&Delta;</td>
+				<td>&Delta;</td>
+				<td>&Delta;</td>
+				<td>&mdash;</td>
+				<td>&mdash;</td>
+			</tr>
+		</tbody>
+	</table>
+</section>
