@@ -3,13 +3,35 @@ layout: default
 title: Getting Started
 ---
 <section>
-	<h3>How to use PHP Merchant</h3>
+	<h3>The basics</h3>
 
-	<p>PHP Merchant is suitable for dealing with one or multiple payment gateways in a PHP application.</p>
+	<p>One of the <a href="index.html">principal goals of PHP Merchant</a> is to minimize the time you have to spend to learn the way around a payment gateway. We abstract all the ugly details and leave you with a consistent and simple interface that you can use to deal with multiple gateways at once.</p>
 
-	<p>Below is the sample code that is actually used in another project. Note that if you want to use another gateway, you'll only need to replace <code>new PHP_Merchant_Paypal_Express()</code> with the proper class of your choice.</p>
+	<p>First thing you need to do is to plan which payment gateway you're going to use with your project. We have a handy <a href="supported-gateways.html">payment gateway feature matrix</a> that could help you choose the best suited payment gateway to use. These payment gateways often require a special API credential to use their service (API username, password, secret key etc.), so you need to make sure you have this as well.</p>
 
-	{% highlight php linenos startinline %}
+	<p>Then, you can start <a href="installation.php">downloading and putting PHP Merchant in your project</a>. The most important file that you have to include every time you use PHP Merchant is <code>php-merchant.php</code>. Also, depending on the payment gateways you're planning to use, you also need to include those individual classes as well. Example:</p>
+
+{% highlight php linenos startinline %}
+// Assuming you're using Paypal Express Checkout and Paypal Pro, and
+// PHP Merchant is put inside a sub-directory called php-merchant.
+require_once( 'php-merchant/common/php-merchant.php' );
+require_once( 'php-merchant/gateways/paypal-express-checkout.php' );
+require_once( 'php-merchant/gateways/paypal-pro.php' );
+{% endhighlight %}
+
+</section>
+
+<section>
+	<h3>Making a payment</h3>
+
+	<p>To make a payment, first you'll need to create an instance of the payment gateway class. For instance, to create a Paypal Express Checkout instance:</p>
+
+{% highlight php linenos startinline %}
+$paypal_express = new PHP_Merchant_Paypal_Express_Checkout();
+{% endhighlight %}
+
+	<p>You can also pass into the constructor an array containing API information as well:</p>
+{% highlight php linenos startinline %}
 $api_info = array(
     'return_url'        => 'http://example.com/return',
     'cancel_url'        => 'http://example.com/cancel',
@@ -18,7 +40,12 @@ $api_info = array(
     'api_password'      => 'QFZCWN5HZM8VBG7Q',
     'api_signature'     => 'A-IzJhZZjhg29XQ2qnhapuwxIDzyAZQ92FRP5dqBzVesOkzbdUONzmOU',
 );
-$gateway = new PHP_Merchant_Paypal_Express( $api_info );
+$paypal_express = new PHP_Merchant_Paypal_Express_Checkout( $api_info );
+{% endhighlight %}
+
+	<p>To make an actual payment using the payment gateway instance, you can use the <code>purchase</code> method. You need to pass into this method an array containing the information regarding the purchase:</p>
+
+{% highlight php linenos startinline %}
 $payment_options = array(
     // Shipping details
     'shipping_address' => array(
@@ -73,5 +100,28 @@ $payment_options = array(
     ),
 );
 
-$gateway->purchase( $payment_options );{% endhighlight %}
+$response = $paypal_express->purchase( $payment_options );
+{% endhighlight %}
+
+<p>The return value of <code>purchase()</code> will be a <code>PHP_Merchant_Response</code> object. To check whether the payment succeeds or not:</code></p>
+
+{% highlight php linenos startinline %}
+if ( $response->is_successful() ) {
+	// if successful, then do something on your back end
+	$my_app->process( $response->get( 'transaction_id' ) );
+} else {
+	// if failed, output the errors
+	$my_app->display( $response->get_errors() );
+}
+{% endhighlight %}
+</section>
+
+<section>
+	<h3>Resources</h3>
+	<p>This is a very brief and superficial introduction to how you use PHP Merchant. The sample code is also simplified, but the concept is there. If you want to use another gateway, simply replace <code>new PHP_Merchant_Paypal_Express_Checkout()</code> with the proper class name. Also some gateways require different API parameters. It's highly recommended that you read the corresponding resources for detailed information.</p>
+	<ul>
+		<li><a href="supported-gateways.html">Individual gateway documentation and supported feature matrix.</a></li>
+		<li><a href="gateway-class.html">Payment Gateway Class</a></li>
+		<li><a href="response.html">Processing Response</a></li>
+	</ul>
 </section>
