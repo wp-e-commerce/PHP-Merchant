@@ -1,0 +1,58 @@
+---
+layout: default
+title: Contributing to PHP Merchant
+---
+
+<section>
+	<p>PHP Merchant is an open-source project driven by community contribution. Your participation in this community project is more than welcomed! There are a few ways for you to do that.</p>
+</section>
+
+<section>
+	<h3>Reporting Bugs and Issues</h3>
+	<p>Another way you can contribute to PHP Merchant is by reporting any problems you find while using it. Simply create an issue ticket on <a href="https://github.com/instinct/PHP-Merchant/issues">our github issue tracker</a>, and you'll get responses from other community members.</p>
+	<p>When creating a ticket, make sure you describe thoroughly the issue you're having. A good issue ticket addresses the following points:</p>
+	<ul>
+		<li>Which payment gateway are you using?</li>
+		<li>What is the expected results?</li>
+		<li>What do you see instead?</li>
+		<li>Are there any PHP notices, warnings or error messages?</li>
+		<li>What version of PHP Merchant and PHP are you using?</li>
+		<li>Screenshots would be awesome.</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Development</h3>
+	<p>If you're using PHP Merchant, it's likely that you're already an experienced web developer. The community will benefit a lot from your expertise if you could contribute code to this project in the form of: patches, pull requests, new payment gateway development, and testing.</p>
+
+	<h4>Coding Standards</h4>
+	<p>PHP Merchant is a spin-off from a opensource plugin for WordPress. As a result, we're adopting <a href="http://codex.wordpress.org/WordPress_Coding_Standards">WordPress coding standards.</a></p>
+	<p>For unit tests, the same coding standards apply. Also, the test case function name should be as specific as possible, even if it's long. The reason why length doesn't matter is because we don't have to call unit test functions anywhere else, and we need to know which each test case does at the first glance when something fails.</p>
+
+	<h4>Patches</h4>
+	<p>Sending us a patch (via the <a href="https://github.com/instinct/PHP-Merchant/issues">issue tracker</a>) would be the most straight-forward way for you to contribute code to the project. Let's say you have made some changes that you think would be useful for other users, you can create a patch on your local working copy:</p>
+{% highlight bash linenos %}
+# confirm the changes you made
+git status
+# export your changes to a patch file
+git diff > ~/Desktop/my-patch.diff
+{% endhighlight %}
+	<p>Then <a href="https://github.com/instinct/PHP-Merchant/issues">upload your <code>diff</code> file</a> so that other members can review and comment your change.</p>
+
+	<h4>Pull Requests</h4>
+	<p>Patches might be convenient for small changes (bug fixes, minor improvements). But if you want to contribute new features or new payment gateways, the best way would be to use Pull Requests. Github has a very <a href="http://help.github.com/send-pull-requests/">detailed guide on how to use pull requests</a> for collaborative development. Give it a read!</p>
+
+	<h4>New Payment Gateways</h4>
+	<p>If you've already extended PHP Merchant to support gateways that are not listed on our <a href="supported-gateways.html">Supported Gateways page</a>, why not share it with other developers? PHP Merchant is a new project and desparately needs to expand its support for as many payment gateways as possible.</p>
+	<p>You're recommended to take a look at our General Topics and Advanced Topics in the <a href="toc.html">Table of Contents</a> to know how to extend PHP Merchant feature.</p>
+
+	<h4>Testing and Unit Tests</h4>
+	<p>For production site, you're recommended to use the <code>master</code> branch. But if you want to develop using cutting edged versions, feel free to checkout code from our <code>develop</code> branch.</p>
+	<p>Included in PHP Merchant is a test suite, located in the <code>tests</code> sub-folder. We're trying to ensure every class has a good unit test coverage. It would be awesome if you could contribute edge test cases, or improve the test suite's code.</p>
+</section>
+
+<section>
+	<h3>Documentation</h3>
+	<p>The main source of documentation for this project is located in our <a href="https://github.com/instinct/PHP-Merchant/tree/gh-pages">gh-pages branch on github</a>. The static content of the documentation is managed using <a href="http://jekyllrb.com/">jekyll</a>. jekyll's documentation is pretty straight forward, and you can just look at our documentation structure to see how it works.</p>
+	<p>As the project evolves and the number of supported gateways grows, contribution from volunteers would help make PHP Merchant more accessible to new developers.</p>
+</section>
