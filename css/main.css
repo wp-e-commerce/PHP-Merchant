@@ -50,17 +50,18 @@ table {
 	border-collapse:collapse;
 	border-left:none;
 }
-	th, td {
+    th, td {
 		border-left:1px solid #ccc;
-		padding:5px;
-		text-align:center;
-		width:11%;
+		padding:10px;
 	}
 
-	tr th:first-child, tr td:first-child {
-		text-align:left;
-		width:23%;
-	}
+    th {
+        text-align:center;
+    }
+
+    td {
+        text-align:left;
+    }
 
 	tbody tr:hover td, tbody tr:hover th {
 		background-color:#ffffd4;
@@ -71,7 +72,15 @@ table {
 	}
 
 	th[scope=col] {
-		border-bottom:1px solid #efefef;
+		border-bottom:1px solid #ccc;
+	}
+
+	tbody tr td, tbody tr th {
+	    border-top:1px solid #efefef;
+	}
+
+	tbody tr:first-child td, tbody tr:first-child th {
+	    border-top:none;
 	}
 
 header hgroup, header nav, article { padding:0 40px; }
@@ -151,9 +160,13 @@ article {
 			margin-top:0;
 		}
 
-		article section ul {
+		article ul {
 			list-style-position:inside;
 			margin-left:15px;
+		}
+
+		article li p {
+		    padding-left:15px;
 		}
 
 		article nav section {
@@ -185,6 +198,31 @@ article {
 			padding:3px 5px;
 			text-align:right;
 		}
+
+		#supported-gateways td {
+		    text-align:center;
+		}
+
+		#supported-gateways td, #supported-gateways th {
+		    width:11%;
+		}
+
+		#supported-gateways tr th:first-child, #supported-gateways tr td:first-child {
+    		text-align:left;
+    		width:23%;
+    	}
+
+    	#exceptions th.code {
+    	    width:6%;
+    	}
+
+    	#exceptions th.message {
+    	    width:35%;
+    	}
+
+    	#exceptions tr td:first-child {
+    	    text-align:center;
+    	}
 
 footer {
 	border-top:2px solid #efefef;
