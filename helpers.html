@@ -4,3 +4,19 @@ title   : Helper Functions
 category: General Topics
 order   : 4
 ---
+
+<p>PHP Merchant has some utility functions that are used throughout its code base.</p>
+
+<ul>
+	<li>
+		<h4><code>phpme_map( $from_array, $map, $return_type = 'Array' )</code></h4>
+		<p>What this function does is mapping new array key to the same values in <code>$from_array</code>.</p>
+		<p><strong>Arguments:</strong></p>
+		<ul>
+			<li><code>$from_array</code>: The array that you want to extract the values from.</li>
+			<li><code>$map</code>: An associative array containing pairs of $new_key => $old_key.</li>
+			<li><code>$return_type</code>: Defaults to 'Array'. You can make this function returns an object by specifying $return_type as 'Object'.</li>
+		</ul>
+		<p><strong>Return:</strong> A new array with the new keys containing values from the <code>$from_array</code>.</p>
+	</li>
+</ul>
