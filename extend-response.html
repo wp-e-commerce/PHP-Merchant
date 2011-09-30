@@ -4,3 +4,49 @@ title   : Extending Response Class
 category: Advanced Topics
 order   : 1
 ---
+<p>When you add support for other payment gateways, it is required that you also add support for the response data that you receive from the gateways as well. To do that, extend the base <code>PHP_Merchant_Response</code> class.</p>
+
+<section>
+	<h3>Constructor</h3>
+	<p>The constructor should always expect to be passed in the response string fed by the HTTP <code>post()</code> or <code>get()</code> methods. Then it's the job of the constructor to break down this response string into "properties".</p>
+	<p>Properties should be stored inside the <code>protected</code> variable named <code>$options</code> that is inherited from the parent class.</p>
+	<p>If the response contains no error, <code>$this->is_successful</code> must be set to <code>true</code>.</p>
+	<p>The original response string should be saved to <code>$this->response</code>.</p>
+	<p>Errors should be saved into an array: <code>$this->errors</code>. Each error itself is an associative array containing the following keys:</p>
+	<ul>
+		<li><code>code</code>: The error code if it's provided.</li>
+		<li><code>message</code>: Error message.</li>
+		<li><code>details</code>: More detailed description of the error, if it's available.</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Example</h3>
+	{% highlight php linenos startinline %}
+	class PHP_Merchant_Dummy_Gateway_Response()
+	{
+		// let's assume the response we get is a JSON string
+		public function __construct( $response ) {
+			$this->response = $response;
+			$params = json_decode( $response );
+
+			if ( $params['successful'] ) {
+				$this->is_successful = true;
+				$this->options = array(
+					'transaction_id' => $response['id'],
+					'payment_status' => $response['purchase_status'],
+					// etc.
+				);
+			} else {
+				foreach ( $params['errors'] as $error ) {
+					$this->errors[] = array(
+						'code'    => $error['code'],
+						'message' => $error['title'],
+						'details' => $error['desc'],
+					);
+				}
+			}
+		}
+	}
+	{% endhighlight %}
+</section>
