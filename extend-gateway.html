@@ -4,3 +4,68 @@ title   : Adding Support for Other Gateways
 category: Advanced Topics
 order   : 0
 ---
+
+<section>
+	<h3>Extending Base Class</h3>
+	<p>PHP Merchant has a base gateway class that you can extend to provide support for other payment gateways. For instance, to create a Dummy payment gateway:</p>
+
+	{% highlight php linenos startinline %}
+	class PHP_Merchant_Dummy_Gateway extends PHP_Merchant
+	{
+		public function __construct( $options ) {
+			parent::__construct( $options );
+		}
+	}
+	{% endhighlight %}
+
+	<p>Then you can proceed to define operation methods: <code>purchase()</code>, <code>authorize()</code>, <code>capture()</code>, <code>void()</code>, <code>credit()</code>, <code>recurring()</code>, <code>save_card()</code>. If your payment gateway doesn't support some of these methods, feel free to leave them undefined. <code>PHP_Merchant</code> base class will throw exception automatically.</p>
+</section>
+
+<section>
+	<h3>Maintaining Consistent API</h3>
+	<p>One very important thing you have to watch out when implementing new payment gateway is to always keep a consistent API. Operation methods should always do what they're expected to. If the payment gateway you're dealing with has some extra features, then create separate methods to support those features.</p>
+	<p>Also, make sure the operation methods are all accepting at least one argument, that is the payment gateway option array. The argument passed into these methods should overwrite whatever options that have already been set before (for example, using <code>array_merge()</code>).</p>
+	<p>Payment options should be stored in the protected array named <code></code>. The option names should be consistent with <a href="base-class.html#payment-gateway-options"></a>what other gateways are using commonly. For example:</p>
+	<p>Operation methods should always return an object of class <code>PHP_Merchant_Response</code>. It's required that you <a href="extend-response.html">extend the base <code>PHP_Merchant_Response</code></a> so that the response from the payment gateway is interpreted properly.</p>
+	<p>An example of a Dummy Gateway that only has a supported <code>purchase()</code> operation:</p>
+	{% highlight php linenos startinline %}
+	class PHP_Merchant_Dummy_Gateway extends PHP_Merchant
+	{
+		private $request;
+
+		public function __construct( $options ) {
+			parent::__construct( $options );
+		}
+
+		// build a request array to pass into $http->post()
+		private function build_request() {
+			$this->request = array(
+				'user'     => $this->options['api_username'],
+				'pass'     => $this->options['api_password'],
+				'secret'   => $this->options['api_signature'],
+				'total'    => $this->options['amount'],
+				'subtotal' => $this->options['subtotal'],
+			);
+		}
+
+		public function purchase( $options ) {
+			$this->options = array_merge( $options );
+			$this->build_request();
+			$response_string = $this->http->post( 'http://dummy-gateway.org/api/', $this->request );
+			return new PHP_Merchant_Dummy_Gateway_Response( $response_string );
+		}
+	}
+	{% endhighlight %}
+</section>
+
+<section>
+	<h3>Resources</h3>
+	<ul>
+		<li>
+			<a href="supported-gateways.html">Operation Types</a>
+			<a href="base-class.html">Gateway Base Class</a>
+			<a href="response.html">Response Class</a>
+			<a href="extend-response.html">Extending Response Class</a>
+		</li>
+	</ul>
+</section>
