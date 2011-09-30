@@ -12,6 +12,16 @@ order   : 1
 	<ul>
 		<li><a href="#enabling-ipn">Enabling IPN</a></li>
 		<li><a href="#implementing-listener">Implementing IPN Listener</a></li>
+		<li>
+			<a href="#functions">Function Reference</a>
+			<ul>
+				<li><a href="#construct"><code>__construct()</code></a></li>
+				<li><a href="#is_verified"><code>is_verified()</code></a></li>
+				<li><a href="#get"><code>get()</code></a></li>
+				<li><a href="#get_data"><code>get_data()</code></a></li>
+				<li><a href="#is_payment_xxx"><code>is_payment_xxx()</code></a></li>
+			</ul>
+		</li>
 	</ul>
 </nav>
 
@@ -58,7 +68,7 @@ if ( $ipn->is_verified() ) {
 	<h3>Function Reference</h3>
 	<p>The IPN object provides a similar interface compared to a PayPal response object. The following methods can be used:</p>
 
-	<h4><code>__construct()</code></h4>
+	<h4 id="construct"><code>__construct()</code></h4>
 	<p>Instantiating a PHP_Merchant_Paypal_IPN object is straight forward:</p>
 {% highlight php linenos startinline %}
 $ipn = new PHP_Merchant_Paypal_IPN();
@@ -76,10 +86,10 @@ $ipn = new PHP_Merchant_Paypal_IPN();
 $ipn = new PHP_Merchant_Paypal_IPN( $_GET, true, new PHP_Merchant_HTTP_Dummy() );
 {% endhighlight %}
 
-	<h4><code>is_verified()</code></h4>
+	<h4 id="is_verified"><code>is_verified()</code></h4>
 	<p>This method verifies that the IPN request actually comes from PayPal and it must be called somewhere in your IPN listener.</p>
 
-	<h4><code>get( $property )</code></h4>
+	<h4 id="get"><code>get( $property )</code></h4>
 	<p>Get a properties of the IPN request that PayPal sends to your site. The following properties are available:</p>
 	<table>
 		<thead>
