@@ -11,6 +11,11 @@ order   : 1
 
 <ul>
 	<li>
+		<h4 id="get"><code>get()</code></h4>
+		<p>Returns a property of the response. Some payment gateways return the build version, or a special token ID in order to validate a payment. You'll need to refer to the gateway's documentation and use this <code>get()</code> function to retrieve the value of such properties.</p>
+	</li>
+
+	<li>
 		<h4 id="is_successful"><code>is_successful()</code></h4>
 		<p>Returns <code>true</code> if the payment request is successfully sent, and the response from the payment gateway contains no errors.</p>
 		<p>Note that this does not actually indicate the transaction status (whether the payment is successfully debited into the merchant account, or it is still pending). For that, you need to use <code>is_payment_completed().</code></p>

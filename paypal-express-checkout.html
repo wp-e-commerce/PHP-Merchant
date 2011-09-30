@@ -1,6 +1,329 @@
 ---
 layout  : default
-title   : Paypal Express Checkout
+title   : PayPal Express Checkout
 category: Gateway Reference
 order   : 0
 ---
+
+<nav>
+	<h4>In This Topic</h4>
+	<ul>
+		<li><a href="#usage-example">Usage Example</a></li>
+		<li>
+			<a href="#function-reference">Function References</a>
+			<ul>
+				<li><a href="#setup_purchase"><code>setup_purchase()</code></a></li>
+				<li><a href="#get_details_for"><code>get_details_for()</code></a></li>
+				<li><a href="#purchase"><code>purchase()</code></a></li>
+			</ul>
+		</li>
+		<li>
+			<a href="#caveats">Caveats</a>
+			<ul>
+				<li><a href="#line-item">Line item details are not included in Paypal receipts</a></li>
+				<li><a href="#cart-discount">How to include a cart discount into your option array</a></li>
+			</ul>
+		</li>
+		<li>
+			<a href="#options">Express Checkout Options</a>
+		</li>
+		<li>
+			<a href="#response">Express Checkout Response</a>
+			<ul>
+				<li><a href="#response-functions">Functions</a></li>
+				<li><a href="#response-properties">Properties</a></li>
+			</ul>
+		</li>
+	</ul>
+</nav>
+
+<section>
+	<h3>Introduction</h3>
+	<p><a href="https://merchant.paypal.com/us/cgi-bin/?cmd=_render-content&amp;content_ID=merchant/express_checkout">PayPal Express Checkout</a> is a service that allows customers to checkout and pay using their PayPal billing and shipping details. With Express Checkout, the customer will review the payment details on your site, get redirected to PayPal to login, and transferred back to your site to finalize the transaction.</p>
+	<p>Used together with <a href="paypal-ipn.html">PayPal IPN</a>, Express Checkout is a very powerful payment processing method. You're encouraged to also read PayPal's official <a href="https://cms.paypal.com/us/cgi-bin/?cmd=_render-content&amp;content_ID=developer/e_howto_api_ECGettingStarted">getting started guide for Express Checkout</a>.</p>
+</section>
+
+<section id="usage-example">
+	<h3>Usage Example</h3>
+	<p>Let's say you're an online jean shop. A customer, Jane, visits your site, picks a few jeans, and go to your checkout page. There, she'll have an option to click on "Checkout with PayPal". When she does so, there are 6 steps in the Express Checkout process:</p>
+	<ol>
+		<li>Behind the scene, your website sends Jane's order to PayPal (see <a href="#setup_purchase">setup_purchase()</a>). PayPal returns a token.</li>
+		<li>Your site then redirects Jane to PayPal so that she can authenticate her identity.</li>
+		<li>Jane is sent back to your store where you present her with an order review page.</li>
+		<li>Jane confirms the order by clicking "Confirm Payment".</li>
+		<li>Behind the scene, your site sends another request to PayPal (see <a href="#get_details_for">get_details_for()</a> and <a href="#purchase">purchase()</a>).</li>
+		<li>PayPal confirms that the purchase is complete, you can then send Jane a receipt.</li>
+	</ol>
+</section>
+
+<section id="function-reference">
+	<h3>Function References</h3>
+
+	<h4 id="setup_purchase"><code>setup_purchase( $options )</code></h4>
+	<p>This function is an abstraction for PayPal Express Checkout's <code>SetExpressCheckout</code> API call.</p>
+	<p>In <a href="#usage-example">step 1 of our usage example</a>, your site has to send PayPal a request containing Jane's order. Note that <code>return_url</code> and <code>cancel_url</code> must be specified in your options array.</p>
+	<p>PayPal will return a token if there's no error. Then you attach the token to the following URL and redirect Jane there:</p>
+	<pre>https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout&amp;token=</pre>
+	<p>Example code:</p>
+{% highlight php linenos startinline %}
+$gateway = new PHP_Merchant_PayPal_Express_Checkout();
+$response = $gateway->setup_purchase( $options );
+if ( $response->is_successful() ) {
+	$token = $response->get( 'token' );
+	header('Location: https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=' . $response->get( 'token' ));
+}
+{% endhighlight %}
+
+	<p>When Jane logs into her PayPal account and authenticates the order, PayPal will redirect her back to your site (see <a href="#options">return_url</a> option). Let's say your <code>return_url</code> is <code>http://example.com/confirm-paypal-transaction</code>, Paypal will redirect Jane to the following URL:</p>
+	<pre>http://example.com/confirm-paypal-transaction?token=EC-1OIN4UJGFOK54YFV&amp;PayerID=BC798KQ2QU22W</pre>
+	<p>You can see that Paypal will supply two parameters: the token again, and a Payer ID. These two parameters are required for your <code>purchase()</code> call later to finalize the payment. As a result, in your transaction confirmation page, you should have this form somewhere to pass the token and Payer ID to the next page where you actually finalize the transaction.</p>
+{% highlight html-php linenos %}
+<form action="http://example.com/finalize-paypal-transaction" method="POST">
+	<p>
+		<input type="hidden" name="token" value="<?php echo htmlspecialchars( $_GET['token'] ); ?>" />
+		<input type="hidden" name="payer_id" value="<?php echo htmlspecialchars( $_GET['PayerID'] ); ?>" />
+		<input type="submit" name="action" value="Confirm Your Transaction" />
+	</p>
+</form>
+{% endhighlight %}
+
+	<h4 id="get_details_for"><code>get_details_for( $token )</code></h4>
+	<p>This function is an abstraction for PayPal Express Checkout's <code>GetExpressCheckoutDetails</code> API call.</p>
+	<p>We're continuing our code example from the <code>setup_purchase()</code> section.</p>
+	<p>In <a href="#usage-example">step 5 of our usage example</a>, after Jane clicks "Confirm Payment", she'll be directed to <code>http://example.com/finalize-paypal-transaction</code>. Here, just to be certain that the submitted <code>_POST['token']</code> and <code>_POST['payer_id']</code> are valid, and also to fetch the order details again, you'll make a <code>get_details_for()</code> call. The response of <code>get_details_for()</code> will also contain the payment options that you sent to <code>setup_purchase()</code>.</p>
+{% highlight php linenos startinline %}
+// $api_options contains your api_username, api_password and api_signature
+$gateway = new PHP_Merchant_Paypal_Express_Checkout( $api_options );
+
+$response = $gateway->get_details_for( $_POST['token'] );
+if ( $response->is_successful() ) {
+	// here you'll later execute purchase()
+}
+{% endhighlight %}
+
+	<h4 id="purchase"><code>purchase( $options )</code></h4>
+	<p>This function is an abstraction for PayPal Express Checkout's <code>DoExpressCheckout</code> API call.</p>
+	<p>We're continuing our code example from the <code>get_details_for()</code> section.</p>
+	<p><code>purchase()</code> accepts an option array, much like <code>setup_purchase()</code>. Unlike <code>setup_purchase()</code>, this <code>purchase()</code> method requires two additional options: <code>token</code> and <code>payer_id</code>.</p>
+	<p>It's not required that you repeat the original options that you already sent to <code>setup_purchase()</code> because it's already stored on Paypal and can be identified by the token. However, if you have line item details, it's recommended that you include all the original options in this <code>purchase()</code> call once again. Otherwise the transaction receipt email that Paypal sends to your customer won't have the line item details in there. This is a known caveat of PayPal Express Checkout.</p>
+	<p>The final code that continues our preceding code example will look like this:</p>
+{% highlight php linenos startinline %}
+// $api_options contains your api_username, api_password and api_signature
+$gateway = new PHP_Merchant_Paypal_Express_Checkout( $api_options );
+
+$response = $gateway->get_details_for( $_POST['token'] );
+if ( $response->is_successful() ) {
+	// rebuild the array of payment options from the response
+	// for the subsequent $gateway->purchase() call
+	$purchase_options = array(
+		'token'    => $_POST['token'],    // required
+		'payer_id' => $_POST['payer_id'], // required
+
+		// from here on we just simply repeat the options that the response returns
+		// this is optional, but recommended if you have line item details
+		'currency' => $response->get( 'currency' ),
+		'amount'   => $response->get( 'amount' ),
+		'subtotal' => $response->get( 'subtotal' ),
+		// etc.
+	);
+
+	$purchase_response = $gateway->purchase( $purchase_options );
+
+	if ( $purchase_response->is_successful() ) {
+		// if there's no error
+		if ( $purchase_response->is_payment_completed() ) {
+			// if the transaction is marked as 'completed' on Paypal
+			// here you might want to send an email receipt and mark
+			// the transaction as "completed" in your own website database
+		} elseif ( $purchase_response->is_payment_pending() ) {
+			// sometimes Paypal marks a payment as 'pending'
+			// this requires that you go to your Paypal account and manually
+			// accept this payment to finalize the transaction
+		}
+	}
+}
+{% endhighlight %}
+</section>
+
+<section id="caveats">
+	<h3>Caveats</h3>
+	<p>Paypal Express Checkout has some caveats that people often run into during integration. PHP Merchant cannot control this, but it does make it easier for you to work around those issues.</p>
+
+	<h4 id="line-item">Line item details are not included in Paypal receipts</h4>
+	<p>When calling purchase(), if you don't include the payment options that you specified in <code>setup_purchase()</code> or the payment information that you received in <code>get_details_for()</code>, PayPal will not include the payment details in their email receipts. As a result, your customer will only see the total amount without any details of the items.</p>
+	<p>To work around this, you'll need to construct the payment options again before calling purchase(). <a href="#purchase">See our example code above regarding how to do this.</a></p>
+
+	<h4 id="cart-discount">How to include a cart discount into your option array</h4>
+	<p>PayPal NVP API does not provide a way to specify a total cart discount. But there's a work around for that.</p>
+	<p>What you need to do is to create an additional line item with a negative value. For example, if the item has a price of $120, but the customer gets a discount of $20, the option array has to be adjusted like this:</p>
+{% highlight php linenos startinline %}
+// before discount
+$options = array(
+	'amount'   => 130,
+	'subtotal' => 120,
+	'shipping' => 10,
+	'items' => array(
+		array(
+			'name'     => 'Test Product',
+			'quantity' => 1,
+			'amount'   => 120,
+		),
+	),
+);
+
+// after a $20 discount
+$options = array(
+	'amount'   => 110,
+	'subtotal' => 100,
+	'shipping' => 10
+	'items' => array(
+		array(
+			'name'     => 'Test Product',
+			'quantity' => 1,
+			'amount'   => 120,
+		),
+		array(
+			'name'     => 'Discount',
+			'quantity' => 1,
+			'amount'   => -20,
+		),
+	),
+);
+{% endhighlight %}
+	<p>There's an edge case. If the discount amount is larger than or equal to the subtotal itself, you can't set <code>subtotal</code> to zero. PayPal requires that the subtotal must be positive. So in this edge case you'll have to set it to <code>0.01</code>. For example:</p>
+{% highlight php linenos startinline %}
+	$options = array(
+		'amount'   => 10,
+		'subtotal' => 0.01,
+		// because you have to leave 0.01 in subtotal, you can deduct
+		// that in your shipping amount to preserve the $10 total value
+		'shipping' => 9.99,
+		'items' => array(
+			array(
+				'name'     => 'Test Product',
+				'quantity' => 1,
+				'amount'   => 120,
+			),
+			array(
+				'name'     => 'Discount',
+				'quantity' => 1,
+				'amount'   => -119.99, // you have to leave 0.01 for the subtotal to be positive
+			),
+		),
+	);
+{% endhighlight %}
+</section>
+
+<section id="options">
+	<h3>Express Checkout Options</h3>
+	<p>Before you could execute a payment gateway operation (<code>setup_purchase()</code>, <code>purchase()</code>, or <code>get_details_for()</code>), you need to <a href="base-class.html#payment-gateway-options">build an array of payment gateway options to pass into these functions</a>.</p>
+	<p>Besides general options that the base payment gateway accepts, the following options can be used for Express Checkout:</p>
+	<ul>
+		<li><code>return_url</code>: <strong>Required</strong> for <code>setup_purchase()</code>. The return URL is the page to which PayPal redirects your buyer's browser after the buyer logs into PayPal and approves the payment.</li>
+		<li><code>cancel_url</code>: <strong>Required</strong> for <code>setup_purchase()</code>. The cancel URL is the page to which PayPal redirects your buyer's browser if the buyer does not approve the payment.</li>
+		<li><code>token</code>: <strong>Required</strong> for <code>purchase()</code> and <code>get_details_for()</code>. The token of the transaction that PayPal returns to you when you <code>setup_purchase()</code>.</li>
+		<li><code>payer_id</code>: <strong>Required</strong> for <code>purchase()</code>. The Payer ID that PayPal returns to you when you <code>setup_purchase()</code>.</li>
+		<li><code>address_override</code>: Set this to <code>true</code> if you want to let the customer input the shipping address on your site and use that instead of the address on file for that customer.</li>
+		<li><code>invoice</code>: When executing <code>setup_purchase()</code> or <code>purchase</code>, if your website is using its own identification number for this transaction, you can specify this option to save that ID along with the PayPal transaction itself. The subsequent responses from Paypal for that particular transaction will include an 'invoice' parameter with the same value as well.</li>
+	</ul>
+</section>
+
+<section id="response">
+	<h3>Express Checkout Response</h3>
+	<p>When you've made a request to PayPal Express Checkout, you'll get a response. It's recommended that you first take a brief look at <a href="response.html">the documentation of PHP Merchant Response class</a>.</p>
+
+	<h4 id="response-functions">Functions</h4>
+	<ul>
+		<li>
+			<p><strong><code>is_checkout_not_initiated()</code>, <code>is_checkout_failed()</code>, <code>is_checkout_in_progress()</code>, <code>is_checkout_completed()</code></strong></p>
+			<p>These functions are wrappers for <code>$response->get( 'checkout_status' )</code>.</p>
+		</li>
+
+		<li>
+			<p><strong><code>is_payment_completed()</code>, <code>is_payment_pending()</code>, <code>is_payment_refunded()</code>, <code>is_payment_denied()</code></strong></p>
+			<p>These functions are wrappers for <code>$response->get( 'payment_status' )</code>.</p>
+			<p>Note that <code>is_payment_completed()</code> is <code>true</code> when <code>payment_status</code> is either <code>Completed</code> or <code>Processed</code>.</p>
+		</li>
+	</ul>
+
+	<h4 id="response-properties">Properties</h4>
+	<p>The options that you pass into <code>setup_purchase()</code> or <code>purchase()</code> will also be returned by PayPal and can be retrieved by <code>$response->get( $option_name )</code>. <a href="#purchase">See the code example of <code>purchase()</code> for more details.</a></p>
+
+	<p>Besides those values, the following can also be retrieved from a response object by calling <code>$response->get( $property_name )</code>:</p>
+	<ul>
+		<li><code>correlation_id</code>: A special ID used for debugging. Most of the time you don't have to use this, unless when you file a bug ticket on PayPal.</li>
+		<li><code>datetime</code>: <code>(string)</code> The date and time of the response.</li>
+		<li><code>timestamp</code>: The UNIX timestamp of the response.</li>
+		<li><code>invoice</code>: If in previous <code>setup_purchase()</code> or <code>purchase()</code> calls, you've already specified an <code>invoice</code> option, it will be returned here in the response.</li>
+		<li><code>payer</code>: An array containing payer information from Paypal, such as <code>id</code>, <code>email</code>, <code>status</code>, <code>first_name</code>, <code>last_name</code>, <code>country</code>.</li>
+		<li><code>shipping_address</code>: An array containing shipping address details.</li>
+		<li><code>items</code>: An array containing items of the transaction.</li>
+		<li><code>checkout_status</code>: The status code of the checkout progress. It can be one of the following strings: <code>'Not-Initiated'</code>, <code>'Failed'</code>, <code>'In-Progress'</code>, <code>'Completed'</code>.</li>
+		<li>
+			<code>payment_status</code>: The status code of the payment. Below is the list of possible values for this property, adapted from <a href="https://cms.paypal.com/us/cgi-bin/?cmd=_render-content&content_ID=developer/e_howto_api_nvp_r_DoExpressCheckoutPayment">PayPal official API documentation</a>.<br />
+			<table>
+				<thead>
+					<tr><th scope="col" class="code" style="width:17%;">Payment Status Code</th><th scope="col" class="desc">Description</th></tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><code>None</code></td>
+						<td>No status</td>
+					</tr>
+					<tr>
+						<td><code>Canceled-Reversal</code></td>
+						<td>A reversal has been canceled; for example, when you win a dispute and the funds for the reversal have been returned to you.</td>
+					</tr>
+					<tr>
+						<td><code>Completed</code></td>
+						<td>The payment has been completed, and the funds have been added successfully to your account balance.</td>
+					</tr>
+					<tr>
+						<td><code>Denied</code></td>
+						<td>You denied the payment. This happens only if the payment was previously pending because of possible reasons described for the PendingReason element.</td>
+					</tr>
+					<tr>
+						<td><code>Expired</code></td>
+						<td>The authorization period for this payment has been reached.</td>
+					</tr>
+					<tr>
+						<td><code>Failed</code></td>
+						<td>The payment has failed. This happens only if the payment was made from your buyer’s bank account.</td>
+					</tr>
+					<tr>
+						<td><code>In-Progress</code></td>
+						<td>The transaction has not terminated, e.g. an authorization may be awaiting completion.</td>
+					</tr>
+					<tr>
+						<td><code>Partially-Refunded</code></td>
+						<td>The payment has been partially refunded.</td>
+					</tr>
+					<tr>
+						<td><code>Pending</code></td>
+						<td>The payment is pending. See the PendingReason field for more information.</td>
+					</tr>
+					<tr>
+						<td><code>Refunded</code></td>
+						<td>The payment is pending. See the PendingReason field for more information.</td>
+					</tr>
+					<tr>
+						<td><code>Reversed</code></td>
+						<td>You refunded the payment.</td>
+					</tr>
+					<tr>
+						<td><code>Processed</code></td>
+						<td>A payment has been accepted.</td>
+					</tr>
+					<tr>
+						<td><code>Voided</code></td>
+						<td>An authorization for this transaction has been voided.</td>
+					</tr>
+					<tr>
+						<td><code>Completed-Funds-Held</code></td>
+						<td>The payment has been completed, and the funds have been added successfully to your pending balance</td>
+					</tr>
+				</tbody>
+			</table>
+		</li>
+	</ul>
+</section>

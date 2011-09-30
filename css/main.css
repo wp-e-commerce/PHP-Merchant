@@ -8,7 +8,8 @@ body {
 	margin:0;
 }
 
-a { color:#0134c5; text-decoration:none }
+a { color:#0134c5; text-decoration:none; }
+a:hover { color:#e13300; }
 
 h1, h2, h3 {
 	font-family:"HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", sans-serif;
@@ -33,6 +34,10 @@ h4 { font-size:18px; margin-top:18px; line-height:16px; }
 
 code {
 	background:#efefef;
+}
+
+pre {
+    margin-bottom:18px;
 }
 
 nav {
@@ -82,6 +87,8 @@ table {
 	tbody tr:first-child td, tbody tr:first-child th {
 	    border-top:none;
 	}
+
+li table { margin-left:15px; margin-top:18px; }
 
 header hgroup, header nav, article { padding:0 40px; }
 
@@ -163,10 +170,15 @@ article {
 		article ul {
 			list-style-position:inside;
 			margin-left:15px;
+			margin-right:15px;
 		}
 
 		article li p {
 		    padding-left:15px;
+		}
+
+		article li p:first-child {
+		    padding-left:0;
 		}
 
 		article nav section {
@@ -181,6 +193,7 @@ article {
 		}
 
 		div.highlight pre {
+		    margin-bottom:0;
 			overflow-y:hidden;
 		}
 
@@ -224,10 +237,49 @@ article {
     	    text-align:center;
     	}
 
+        article nav {
+            background-color:#ffffd4;
+            border:1px solid #ccc;
+            float:right;
+            margin-left:10px;
+            width:25%;
+        }
+            article nav h4 {
+                margin:18px;
+            }
+
+            article nav ul ul {
+                margin-bottom:0;
+            }
+
 footer {
 	border-top:2px solid #efefef;
 	font-size:11px;
 	line-height:36px;
 	margin:18px 40px;
 	text-align:center;
+}
+
+#scroll-to-top {
+    position:fixed;
+    bottom:13px;
+    right:40px;
+}
+
+#scroll-to-top a {
+    display:block;
+    background:#ffffff;
+    border:1px solid #ccc;
+    box-shadow: 0 0px 5px #ccc;
+    font-size:11px;
+    opacity:0.5;
+    padding:10px;
+
+    transition:0.15s ease-in-out;
+    -webkit-transition:0.15s ease-in-out;
+    -moz-transition:0.15s ease-in-out;
+}
+
+#scroll-to-top a:hover {
+    opacity:1;
 }
