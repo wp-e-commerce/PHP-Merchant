@@ -4,3 +4,148 @@ title   : Supporting Paypal IPN
 category: Gateway Reference
 order   : 1
 ---
+
+<p>PayPal IPN (Instant Payment Notification) is a service from PayPal that notifies your web application of events related to PayPal transactions. With IPN, you don't have to manually update the transaction details on your site whenever changes to those transactions happen in PayPal. </p>
+
+<nav>
+	<h4>In This Topic</h4>
+	<ul>
+		<li><a href="#enabling-ipn">Enabling IPN</a></li>
+		<li><a href="#implementing-listener">Implementing IPN Listener</a></li>
+	</ul>
+</nav>
+
+<section id="enabling-ipn">
+	<h3>Enabling IPN</h3>
+	<p>Before being able to use IPN, you have to enable it from your PayPal account.</p>
+	<ol>
+		<li>Sign into your PayPal account.</li>
+		<li>Go to your Profile Preferences.</li>
+		<li>Click on "Instant Payment Notification Preferences".</li>
+		<li>Edit Settings.</li>
+		<li>Check the box "Receive IPN messages (Enabled)".</li>
+		<li>In the Notification URL box, enter the address of your IPN listener.</li>
+	</ol>
+</section>
+
+<section id="implementing-listener">
+	<h3>Implementing IPN Listener</h3>
+	<p>Let's say in step 6 of <a href="#enabling-ipn">Enabling IPN</a>, you set the Notification URL to <code>http://example.com/ipn.php</code>. When changes to a transaction happens on PayPal, a POST request will be sent from PayPal to <code>http://example.com/ipn.php</code>. The body of that POST request will contain information about the transaction being changed.</p>
+	<p>Now you need to implement the listener to pick up the POST message from PayPal.</p>
+	<p>Normally, to implement IPN, a developer has to send back a verification request to PayPal, wait for a response, then process the message. Howevever, PHP Merchant abstracts all that for you. This is all you need to process an IPN message from PayPal:</p>
+{% highlight php linenos startinline %}
+// assuming your Notification URL is http://example.com/ipn.php, put
+// this in the ipn.php file
+
+$ipn = new PHP_Merchant_Paypal_IPN();
+
+if ( $ipn->is_verified() ) {
+	// once the IPN request is verified, you can use the $ipn object as if it's a response object
+	$invoice_id = $ipn->get( 'invoice' );
+
+	if ( $ipn->is_payment_completed() ) {
+		// a fictitious function that sends the email receipt to the customer
+		my_app_send_receipt( $invoice_id );
+	} elseif ( $ipn->is_payment_pending() ) {
+		// a fictitious function that notifies the admin
+		my_app_send_pending_notification_to_admin( $invoice_id );
+	}
+}
+{% endhighlight %}
+</section>
+
+<section id="functions">
+	<h3>Function Reference</h3>
+	<p>The IPN object provides a similar interface compared to a PayPal response object. The following methods can be used:</p>
+
+	<h4><code>__construct()</code></h4>
+	<p>Instantiating a PHP_Merchant_Paypal_IPN object is straight forward:</p>
+{% highlight php linenos startinline %}
+$ipn = new PHP_Merchant_Paypal_IPN();
+{% endhighlight %}
+	<p>However, the constructor also accepts 3 optional parameters:</p>
+	<ul>
+		<li><code>$data</code>: Defaults to <code>false</code>. If set to <code>false</code>, the IPN object use <code>$_POST</code> as PayPal IPN parameters. If you specify an array here, that array will be used as the parameters.</li>
+		<li><code>$test</code>: Defaults to <code>false</code>. If set to <code>true</code>, the IPN object will switch to <a href="https://developer.paypal.com">Sandbox mode</a>.</li>
+		<li><code>$http</code>: Defaults to a <code>PHP_Merchant_HTTP_CURL</code> instance. You can specify your own HTTP object here.</li>
+	</ul>
+	<p>Example:</p>
+{% highlight php linenos startinline %}
+// initialize an object using $_GET instead of $_POST, operating in Sandbox
+// mode, and use a Dummy HTTP transport instead of CURL
+$ipn = new PHP_Merchant_Paypal_IPN( $_GET, true, new PHP_Merchant_HTTP_Dummy() );
+{% endhighlight %}
+
+	<h4><code>is_verified()</code></h4>
+	<p>This method verifies that the IPN request actually comes from PayPal and it must be called somewhere in your IPN listener.</p>
+
+	<h4><code>get( $property )</code></h4>
+	<p>Get a properties of the IPN request that PayPal sends to your site. The following properties are available:</p>
+	<table>
+		<thead>
+			<tr>
+				<th scope="col" style="width:25%;">Property Name</th>
+				<th scope="col">Description</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th scope="row"><code>transaction_id</code></th>
+				<td>PayPal transaction ID</td>
+			</tr>
+			<tr>
+				<th scope="row"><code>handling</code></th>
+				<td>Handling fee</td>
+			</tr>
+			<tr>
+				<th scope="row"><code>shipping</code></th>
+				<td>Shipping fee</td>
+			</tr>
+			<tr>
+				<th scope="row"><code>exchange_rate</code></th>
+				<td>The exchange rate when the payment is accepted into your account, in case it's in a currency other than those you use for your PayPal account.</td>
+			</tr>
+			<tr>
+				<th scope="row"><code>fee</code></th>
+				<td>PayPal fee for the transaction.</td>
+			</tr>
+			<tr>
+				<th scope="row"><code>currency</code></th>
+				<td>Currency of the payment.</td>
+			</tr>
+			<tr>
+				<th scope="row"><code>tax</code></th>
+				<td>Tax amount.</td>
+			</tr>
+			<tr>
+				<th scope="row"><code>total</code></th>
+				<td>Full amount of the customer payment. The amount that's actually put into your account equals to <code>total</code> - <code>fee</code></td>
+			</tr>
+			<tr>
+				<th scope="row"><code>payment_status</code></th>
+				<td>A subset of <a href="paypal-express-checkout.html#payment-status-table">available payment status codes</a> supplied by Paypal response object.</td>
+			</tr>
+			<tr>
+				<th scope="row"><code>payer</code></th>
+				<td>An array containing payer information.</td>
+			</tr>
+			<tr>
+				<th scope="row"><code>address</code></th>
+				<td>The payer address details.</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h4 id="get_data"><code>get_data()</code></h4>
+	<p>This method returns all the properties of the IPN object in one neat array.</p>
+
+	<h4 id="is_payment_xxx"><code>is_payment_xxx()</code></h4>
+	<p>There are four wrapper functions that you can use to check the payment status instead of having to query the <code>payment_status</code> property.</p>
+	<ul>
+		<li><code>is_payment_completed()</code></li>
+		<li><code>is_payment_pending()</code></li>
+		<li><code>is_payment_refunded()</code></li>
+		<li><code>is_payment_refund_pending()</code></li>
+		<li><code>is_payment_denied()</code></li>
+	</ul>
+</section>

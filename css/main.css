@@ -32,6 +32,8 @@ h3 { font-size:24px; line-height:36px; }
 
 h4 { font-size:18px; margin-top:18px; line-height:16px; }
 
+blockquote { font-style:italic; }
+
 code {
 	background:#efefef;
 }
@@ -74,6 +76,7 @@ table {
 
 	th[scope=row] {
 		font-weight:normal;
+		text-align:left;
 	}
 
 	th[scope=col] {

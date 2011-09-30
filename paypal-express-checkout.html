@@ -223,6 +223,7 @@ $options = array(
 		<li><code>cancel_url</code>: <strong>Required</strong> for <code>setup_purchase()</code>. The cancel URL is the page to which PayPal redirects your buyer's browser if the buyer does not approve the payment.</li>
 		<li><code>token</code>: <strong>Required</strong> for <code>purchase()</code> and <code>get_details_for()</code>. The token of the transaction that PayPal returns to you when you <code>setup_purchase()</code>.</li>
 		<li><code>payer_id</code>: <strong>Required</strong> for <code>purchase()</code>. The Payer ID that PayPal returns to you when you <code>setup_purchase()</code>.</li>
+		<li><code>test</code>: Set this option to <code>true</code> if you want to use <a href="https://developer.paypal.com">Sandbox mode</a>.</li>
 		<li><code>address_override</code>: Set this to <code>true</code> if you want to let the customer input the shipping address on your site and use that instead of the address on file for that customer.</li>
 		<li><code>invoice</code>: When executing <code>setup_purchase()</code> or <code>purchase</code>, if your website is using its own identification number for this transaction, you can specify this option to save that ID along with the PayPal transaction itself. The subsequent responses from Paypal for that particular transaction will include an 'invoice' parameter with the same value as well.</li>
 	</ul>
@@ -261,7 +262,7 @@ $options = array(
 		<li><code>checkout_status</code>: The status code of the checkout progress. It can be one of the following strings: <code>'Not-Initiated'</code>, <code>'Failed'</code>, <code>'In-Progress'</code>, <code>'Completed'</code>.</li>
 		<li>
 			<code>payment_status</code>: The status code of the payment. Below is the list of possible values for this property, adapted from <a href="https://cms.paypal.com/us/cgi-bin/?cmd=_render-content&content_ID=developer/e_howto_api_nvp_r_DoExpressCheckoutPayment">PayPal official API documentation</a>.<br />
-			<table>
+			<table id="payment-status-table">
 				<thead>
 					<tr><th scope="col" class="code" style="width:17%;">Payment Status Code</th><th scope="col" class="desc">Description</th></tr>
 				</thead>
