@@ -4,3 +4,25 @@ title   : Adding New Exceptions
 category: Advanced Topics
 order   : 2
 ---
+
+<section>
+	<h3>Adding Exception Codes and Messages</h3>
+	<p>When you extend PHP Merchant to support new gateways, sometimes you might want to extend PHP Merchant exceptions as well.</p>
+
+	<p>To do this, you do not need to extend the PHP_Merchant_Exception class. Instead, use <code>PHP_Merchant_Exception::add_codes()</code>. For example:</p>
+
+	{% highlight php linenos startinline %}
+	// it's better to define error code as constants
+	define( 'PHP_ME_INVALID_TRANSACTION_ID', 1001 );
+	define( 'PHP_ME_INVALID_SHIPPING_ADDRESS', 1002 );
+
+	PHP_Merchant_Exception::addCodes( array(
+		PHP_ME_INVALID_TRANSACTION_ID   => 'This transaction ID is invalid: %s',
+		PHP_ME_INVALID_SHIPPING_ADDRESS => 'This shipping address is invalid: %s',
+	) );
+	{% endhighlight %}
+
+	<p><code>PHP_Merchant_Exception:addCodes()</code> accept an associative array of <code>$code => $message</code> pairs. In the error message, you can specify placeholders in the same format as <a href="http://php.net/manual/en/function.printf.php"><code>printf()</code></a>. These placeholders will be replaced when you throw the exception.</p>
+
+	<p>See <a href="exceptions.html">Exceptions</a> for more information about how to use <code>PHP_Merchant_Exception</code> object.</p>
+</section>

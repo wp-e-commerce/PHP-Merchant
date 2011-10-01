@@ -5,43 +5,84 @@ category: General Topics
 order   : 2
 ---
 
-<p><a href="http://en.wikipedia.org/wiki/Exception_handling">Exceptions</a> are special conditions that change the normal flow of program execution. PHP_Merchant_Exception is a subclass of <a href="http://php.net/manual/en/class.exception.php">PHP Exception class</a>. Checkout PHP documentation for <a href="http://php.net/manual/en/language.exceptions.php">instructions on how to use PHP Exception</a>.</p>
+<section>
+	<h3>Introduction</h3>
 
-<p>Below lists the built-in exceptions supported by PHP Merchant. Note that you can use constants to refer to error codes, which would make your code more readable (for example, use PHPME_FEATURE_NOT_SUPPORTED instead of 1).</p>
+	<p><a href="http://en.wikipedia.org/wiki/Exception_handling">Exceptions</a> are special conditions that change the normal flow of program execution. PHP_Merchant_Exception is a subclass of <a href="http://php.net/manual/en/class.exception.php">PHP Exception class</a>. Checkout PHP documentation for <a href="http://php.net/manual/en/language.exceptions.php">instructions on how to use PHP Exception</a>.</p>
 
-<table id="exceptions">
-	<thead>
-		<tr>
-			<th class="code" scope="col">Code</th>
-			<th class="constant" scope="col">Code Constant</th>
-			<th class="message" scope="col">Message</th>
-			<th class="description" scope="col">Description</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>1</td>
-			<td><code>PHPME_FEATURE_NOT_SUPPORTED</code></td>
-			<td>This payment gateway does not support "%s" feature</td>
-			<td>This exception is thrown when you're trying to execute <a href="supported-gateways.html">an operation</a> that is not supported by payment gateway. For example, if you call $gateway->recurring() on a gateway that does not support recurring payment, you'll get this exception.</td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><code>PHPME_REQUIRED_OPTION_UNDEFINED</code></td>
-			<td>Missing required parameter: %s</td>
-			<td>Some payment gateways require <a href="base-class.html#payment-gateway-options">certain options</a> to be specified when you execute an operation. For example, <code>api_username</code>, <code>api_password</code> and <code>api_signature</code> are almost always required. If you forget to specify such options, you'll get this exception.</td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><code>PHPME_HTTP_REQUEST_FAILED</code></td>
-			<td>HTTP request failed: %s</td>
-			<td>This usually indicates that your server does not support the HTTP method you use to make the request (by default it's CURL). If you get this, you might need to check with your server administrator.</td>
-		</tr>
-		<tr>
-			<td>4</td>
-			<td><code>PHPME_INVALID_RESPONSE</code></td>
-			<td>Invalid response from payment gateway</td>
-			<td>This exception is thrown when PHP Merchant cannot parse the response returned by the payment gateway.</td>
-		</tr>
-	</tbody>
-</table>
+	<p>Below lists the built-in exceptions supported by PHP Merchant. Note that you can use constants to refer to error codes, which would make your code more readable (for example, use PHPME_FEATURE_NOT_SUPPORTED instead of 1).</p>
+
+	<table id="exceptions">
+		<thead>
+			<tr>
+				<th class="code" scope="col">Code</th>
+				<th class="constant" scope="col">Code Constant</th>
+				<th class="message" scope="col">Message</th>
+				<th class="description" scope="col">Description</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>1</td>
+				<td><code>PHPME_FEATURE_NOT_SUPPORTED</code></td>
+				<td>This payment gateway does not support "%s" feature</td>
+				<td>This exception is thrown when you're trying to execute <a href="supported-gateways.html">an operation</a> that is not supported by payment gateway. For example, if you call $gateway->recurring() on a gateway that does not support recurring payment, you'll get this exception.</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td><code>PHPME_REQUIRED_OPTION_UNDEFINED</code></td>
+				<td>Missing required parameter: %s</td>
+				<td>Some payment gateways require <a href="base-class.html#payment-gateway-options">certain options</a> to be specified when you execute an operation. For example, <code>api_username</code>, <code>api_password</code> and <code>api_signature</code> are almost always required. If you forget to specify such options, you'll get this exception.</td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td><code>PHPME_HTTP_REQUEST_FAILED</code></td>
+				<td>HTTP request failed: %s</td>
+				<td>This usually indicates that your server does not support the HTTP method you use to make the request (by default it's CURL). If you get this, you might need to check with your server administrator.</td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td><code>PHPME_INVALID_RESPONSE</code></td>
+				<td>Invalid response from payment gateway</td>
+				<td>This exception is thrown when PHP Merchant cannot parse the response returned by the payment gateway.</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<p>Note that in the exception messages, there can be placeholders. See <a href="http://php.net/manual/en/function.printf.php"><code>printf()</code>.</a></p>
+</section>
+
+<section>
+	<h3>Throwing PHP Merchant Exceptions</h3>
+	<p>When throwing a custom exception that you added to PHP_Merchant_Exception, the constructor accepts 3 parameters:</p>
+
+	<ul>
+		<li><code>$code</code>: <strong>Required</strong>. The error code.</li>
+		<li><code>$message_args</code>: Optional. An array containing values to replace into the exception message placeholders.</li>
+		<li><code>$other_args</code>: Optional. An associative array containing any additional details you want to add regarding the exception.</li>
+	</ul>
+
+	{% highlight php linenos startinline %}
+	throw new PHP_Merchant_Exception( PHPME_HTTP_REQUEST_FAILED, 'POST', array( 'http_code' => 404 ) );
+	// by specifying the second argument, the message of the exception instance will be:
+	// HTTP request failed: POST
+	{% endhighlight %}
+</section>
+
+<section>
+	<h3>Catching Exceptions</h3>
+
+	<p>Here's an example of how you catch an exception:</p>
+	{% highlight php linenos startinline %}
+	try {
+		some_function()
+	} catch ( PHP_Merchant_Exception $e ) {
+		echo "Message: " . $e->getMessage() . "\n";
+		echo "Code: " . $e->getCode() . "\n";
+		echo "Other arguments: \n" . print_r( $e->getArguments(), true );
+	}
+	{% endhighlight %}
+
+	<p><code>getCode()</code> and <code>getMessage()</code> are inherited from <a href="http://php.net/manual/en/class.exception.php">PHP <code>Exception</code> class</a>.</p>
+	<p><code>getArguments()</code> will return the <code>$other_args</code> array that you pass into the exception constructor.</p>
+</section>
