@@ -4,3 +4,14 @@ title   : Adding Support for Other HTTP Transports
 category: Advanced Topics
 order   : 3
 ---
+
+<p>The default HTTP method used in PHP Merchant is CURL. You can develop your own HTTP interface by extending the <code>PHP_Merchant_HTTP</code> class.</p>
+
+<p>Two methods that you'll have to define are:</p>
+
+<ul>
+	<li><code>get( $url, $args )</code></li>
+	<li><code>post( $url, $args )</code></li>
+</ul>
+
+<p><code></code> is an array containing arguments to send to the <code></code>. Both of these functions must return a <code>string</code> response.</p>
