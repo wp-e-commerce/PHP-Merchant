@@ -1,0 +1,288 @@
+h1, h2, h3, h4, body, ul, pre { margin:0; padding:0 }
+
+body {
+	color:#000;
+	font-family:"Helvetica Neue", Helvetica, Arial, Verdana, sans-serif;
+	font-size:14px;
+	line-height:18px;
+	margin:0;
+}
+
+a { color:#0134c5; text-decoration:none; }
+a:hover { color:#e13300; }
+
+h1, h2, h3 {
+	font-family:"HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", sans-serif;
+	font-weight:normal;
+}
+
+h1 {
+	display:none; /* Until we have a proper logo */
+}
+
+h2 {
+	font-size:36px;
+	line-height:72px;
+}
+	h2 a {
+		color:#e13300; text-decoration:none;
+	}
+
+h3 { font-size:24px; line-height:36px; }
+
+h4 { font-size:18px; margin-top:18px; line-height:16px; }
+
+blockquote { font-style:italic; }
+
+code {
+	background:#efefef;
+}
+
+pre {
+    margin-bottom:18px;
+}
+
+nav {
+	overflow:hidden;
+}
+
+	nav div {
+		float:left;
+		width:25%;
+	}
+
+table {
+	width:100%;
+	border:1px solid #ccc;
+	border-collapse:collapse;
+	border-left:none;
+}
+    th, td {
+		border-left:1px solid #ccc;
+		padding:10px;
+	}
+
+    th {
+        text-align:center;
+    }
+
+    td {
+        text-align:left;
+    }
+
+	tbody tr:hover td, tbody tr:hover th {
+		background-color:#ffffd4;
+	}
+
+	th[scope=row] {
+		font-weight:normal;
+		text-align:left;
+	}
+
+	th[scope=col] {
+		border-bottom:1px solid #ccc;
+	}
+
+	tbody tr td, tbody tr th {
+	    border-top:1px solid #efefef;
+	}
+
+	tbody tr:first-child td, tbody tr:first-child th {
+	    border-top:none;
+	}
+
+li table { margin-left:15px; margin-top:18px; }
+
+header hgroup, header nav, article { padding:0 40px; }
+
+header {
+	box-shadow: 0 5px 5px #ccc;
+	background:#fff;
+	position:relative;
+	width:100%;
+}
+
+	header nav {
+		font-size:12px;
+		line-height:1.4em;
+		border-bottom:1px dashed #ccc;
+	}
+		header nav div {
+			margin:20px 0;
+		}
+
+		header nav.hidden {
+			height:0;
+			border-bottom:none;
+		}
+
+		header nav h4 {
+			font-size:14px;
+			margin-bottom:5px;
+		}
+
+		header nav section {
+			margin-bottom:18px;
+		}
+
+		header nav li {
+			list-style-type:none;
+			padding-left:10px;
+		}
+
+		header nav li a {
+			text-decoration:none;
+		}
+
+		header nav li a:hover {
+			text-decoration:underline;
+		}
+
+	#toc-link {
+		line-height:72px;
+		font-size:11px;
+		position:absolute;
+		bottom:0;
+		right:40px;
+	}
+
+article {
+	margin-top:23px;
+}
+	article section {
+		margin-top:18px;
+	}
+		article h3, h4 {
+			margin-bottom:18px;
+			margin-top:24px;
+		}
+
+		article h3 {
+			border-bottom:1px solid #ccc;
+		}
+
+		article section:first-child {
+			border-top:none;
+		}
+
+		article p, article ul  {
+			margin-bottom:18px;
+			margin-top:0;
+		}
+
+		article ul {
+			list-style-position:inside;
+			margin-left:15px;
+			margin-right:15px;
+		}
+
+		article li p {
+		    padding-left:15px;
+		}
+
+		article li p:first-child {
+		    padding-left:0;
+		}
+
+		article nav section {
+			border-top:none;
+		}
+
+		div.highlight {
+			border: 1px solid #ccc;
+			font-size:12px;
+			line-height:20px;
+			margin-bottom:18px;
+		}
+
+		div.highlight pre {
+		    margin-bottom:0;
+			overflow-y:hidden;
+		}
+
+		div.highlight code {
+			background:#fff;
+			line-height:15px;
+		}
+
+		div.highlight .lineno {
+			background:#efefef;
+			border-right:1px solid #dfdfdf;
+			color:#999;
+			display:inline-block;
+			min-width:15px;
+			padding:3px 5px;
+			text-align:right;
+		}
+
+		#supported-gateways td {
+		    text-align:center;
+		}
+
+		#supported-gateways td, #supported-gateways th {
+		    width:11%;
+		}
+
+		#supported-gateways tr th:first-child, #supported-gateways tr td:first-child {
+    		text-align:left;
+    		width:23%;
+    	}
+
+    	#exceptions th.code {
+    	    width:6%;
+    	}
+
+    	#exceptions th.message {
+    	    width:35%;
+    	}
+
+    	#exceptions tr td:first-child {
+    	    text-align:center;
+    	}
+
+        article nav {
+            background-color:#ffffd4;
+            border:1px solid #ccc;
+            float:right;
+            margin-left:10px;
+            width:25%;
+        }
+            article nav h4 {
+                margin:18px;
+            }
+
+            article nav ul ul {
+                margin-bottom:0;
+            }
+
+footer {
+	border-top:2px solid #efefef;
+	font-size:11px;
+	line-height:36px;
+	margin:18px 40px;
+	text-align:center;
+}
+
+#scroll-to-top {
+    position:fixed;
+    bottom:13px;
+    right:40px;
+}
+
+#scroll-to-top a {
+    display:block;
+    background:#ffffff;
+    border:1px solid #ccc;
+    box-shadow: 0 0px 5px #ccc;
+    font-size:11px;
+    opacity:0.5;
+    padding:10px;
+
+    transition:0.15s ease-in-out;
+    -webkit-transition:0.15s ease-in-out;
+    -moz-transition:0.15s ease-in-out;
+}
+
+#scroll-to-top a:hover {
+    opacity:1;
+}
