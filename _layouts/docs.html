@@ -2,10 +2,8 @@
 <html>
 	<head>
 		<title>{{ page.title }} | PHP Merchant Documentation</title>
-		<link rel="stylesheet" href="css/syntax.css" />
-		<link rel="stylesheet" href="css/main.css" />
-		<script type="text/javascript" src="js/jquery.js"></script>
-		<script type="text/javascript" src="js/main.js"></script>
+		<script type="text/javascript" src="../js/jquery.js"></script>
+		<script type="text/javascript" src="js/docs.js"></script>
 
 		<!-- Google Analytics begins -->
 		<script type="text/javascript">
@@ -20,17 +18,34 @@
 			})();
 		</script>
 		<!-- Google Analytics ends -->
+
+		<!-- Google Custom Search begins -->
+		<script src="//www.google.com/jsapi" type="text/javascript"></script>
+		<script type="text/javascript" src="../js/google-search.js"></script>
+		<link rel="stylesheet" href="//www.google.com/cse/style/look/default.css" type="text/css" />
+		<link rel="stylesheet" type="text/css" href="../css/google-search.css" media="all" />
+		<!-- Google Custom Search ends -->
+
+		<link rel="stylesheet" href="css/syntax.css" />
+		<link rel="stylesheet" href="css/docs.css" />
 	</head>
 	<body>
 		<header>
 			{% include toc.html %}
+
+			<div id="cse" style="width: 100%;"></div>
 
 			<hgroup>
 				<h1>PHP Merchant Documentation</h1>
 				<h2><a href="#toc">{{ page.title }}</a></h2>
 			</hgroup>
 
-			<a id="toc-link" href="#toc">Table of Contents &darr;</a>
+			<nav id="internal">
+				<ul>
+					<li><a id="toc-link" href="#toc">Table of Contents &darr;</a></li>
+					<li><a href="#cse" id="cse-link">Search</a></li>
+				</ul>
+			</nav>
 		</header>
 
 		<article>
@@ -46,5 +61,10 @@
 		<div id="scroll-to-top">
 			<a href="#">Top &uarr;</a>
 		</div>
+
+		<p class="ad-disclaimer">
+			<a href="#">x</a>
+			You're seeing ads in your search results because we're using Google Custom Search. Google inserts these ads because we're using their free service, not because we're trying to make money off of it.
+		</p>
 	</body>
 </html>

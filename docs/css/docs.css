@@ -51,43 +51,43 @@ nav {
 		width:25%;
 	}
 
-table {
+article table {
 	width:100%;
 	border:1px solid #ccc;
 	border-collapse:collapse;
 	border-left:none;
 }
-    th, td {
+    article th, article td {
 		border-left:1px solid #ccc;
 		padding:10px;
 	}
 
-    th {
+    article th {
         text-align:center;
     }
 
-    td {
+    article td {
         text-align:left;
     }
 
-	tbody tr:hover td, tbody tr:hover th {
+	article tbody tr:hover td, article tbody tr:hover th {
 		background-color:#ffffd4;
 	}
 
-	th[scope=row] {
+	article th[scope=row] {
 		font-weight:normal;
 		text-align:left;
 	}
 
-	th[scope=col] {
+	article th[scope=col] {
 		border-bottom:1px solid #ccc;
 	}
 
-	tbody tr td, tbody tr th {
+	article tbody tr td, article tbody tr th {
 	    border-top:1px solid #efefef;
 	}
 
-	tbody tr:first-child td, tbody tr:first-child th {
+	article tbody tr:first-child td, article tbody tr:first-child th {
 	    border-top:none;
 	}
 
@@ -137,14 +137,6 @@ header {
 		header nav li a:hover {
 			text-decoration:underline;
 		}
-
-	#toc-link {
-		line-height:72px;
-		font-size:11px;
-		position:absolute;
-		bottom:0;
-		right:40px;
-	}
 
 article {
 	margin-top:23px;
@@ -285,4 +277,43 @@ footer {
 
 #scroll-to-top a:hover {
     opacity:1;
+}
+
+#cse {
+	border-bottom:1px dashed #ccc;
+	margin:0;
+	padding:18px 40px;
+	overflow:hidden;
+	width:auto !important;
+}
+
+#cse.hidden {
+	display:none;
+	border-bottom:none;
+}
+
+#cse .gsc-control-cse div.gsc-clear-button {
+	right:66px;
+}
+
+#cse .gsc-thinWrapper {
+	width:100%;
+}
+
+#internal {
+	border:none;
+}
+
+#internal ul {
+	line-height:72px;
+	font-size:11px;
+	overflow:hidden;
+	position:absolute;
+	bottom:0;
+	right:40px;
+}
+
+#internal li {
+	float:right;
+	margin-left:20px;
 }

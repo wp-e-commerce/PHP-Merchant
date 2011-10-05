@@ -6,7 +6,6 @@ body {
 	font-size:18px;
 	line-height:18px;
 	margin:0;
-	text-align:center;
 }
 
 a { color:#0134c5; text-decoration:none; }
@@ -30,6 +29,7 @@ h2 {
 
 header, article {
 	margin:0 auto 18px;
+	text-align:center;
 	width:600px;
 }
 
@@ -48,3 +48,5 @@ footer {
 	margin:18px 40px;
 	text-align:center;
 }
+
+#cse { width:600px ! important; }
