@@ -3,7 +3,7 @@
 		var toc = $('header nav').eq(0);
 		var cse = $('#cse');
 		var tocHeight = toc.height();
-		var tocLink = $('header a[href=#toc]');
+		var tocLink = $('header nav a[href=#toc]');
 		var windowHeight = $(window).height();
 		var scrollTimeout = null;
 		toc.addClass('hidden');
