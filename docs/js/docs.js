@@ -1,26 +1,35 @@
 (function($){
+	(function(){
+		var toggleState = false;
+		$.fn.toggleTextArrow = function() {
+			var t = $(this).eq(0);
+			toggleState = ! toggleState;
+			if (toggleState) {
+				t.html('Table of Contents &uarr;');
+			} else {
+				t.html('Table of Contents &darr;');
+			}
+		}
+	})();
+
 	$(function(){
-		var toc = $('header nav').eq(0);
-		var cse = $('#cse');
-		var tocHeight = toc.height();
-		var tocLink = $('header nav a[href=#toc]');
-		var windowHeight = $(window).height();
-		var scrollTimeout = null;
-		toc.addClass('hidden');
-		cse.addClass('hidden');
+		var toc           = $('header nav').eq(0),
+		    cse           = $('#cse'),
+		    tocLink       = $('header nav a[href=#toc]'),
+		    windowHeight  = $(window).height(),
+		    scrollTimeout = null;
+		    toc.hide().addClass('hidden');
+		    cse.hide().addClass('hidden');
 		$('a[href="#toc"]').click(
 			function(){
-				if (toc.hasClass('hidden')) {
-					toc.animate({height : tocHeight}).removeClass('hidden');
-					tocLink.html('Table of Contents &uarr;')
-				} else {
-					toc.animate({height : 0}).addClass('hidden');
-					tocLink.html('Table of Contents &darr;')
-				}
+				var t = $(this);
+				toc.slideToggle(function(){
+					toc.toggleClass('hidden');
+					t.toggleTextArrow();
+				});
+				return false;
 			}
 		);
-
-		cse.addClass('hidden');
 
 		$('a[href="#cse"]').click(
 			function(){

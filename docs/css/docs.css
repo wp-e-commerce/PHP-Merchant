@@ -93,7 +93,7 @@ article table {
 
 li table { margin-left:15px; margin-top:18px; }
 
-header hgroup, header nav, article { padding:0 40px; }
+header hgroup, article { padding:0 40px; }
 
 header {
 	box-shadow: 0 5px 5px #ccc;
@@ -106,13 +106,11 @@ header {
 		font-size:12px;
 		line-height:1.4em;
 		border-bottom:1px dashed #ccc;
+		padding:20px 40px;
+		width:100%;
 	}
-		header nav div {
-			margin:20px 0;
-		}
 
 		header nav.hidden {
-			height:0;
 			border-bottom:none;
 		}
 
@@ -288,7 +286,6 @@ footer {
 }
 
 #cse.hidden {
-	display:none;
 	border-bottom:none;
 }
 
@@ -302,6 +299,7 @@ footer {
 
 #internal {
 	border:none;
+	padding:0;
 }
 
 #internal ul {
