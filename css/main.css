@@ -1,3 +1,7 @@
+header, section, nav, article, footer, hgroup {
+	display:block;
+}
+
 h1, h2, h3, h4, body, ul, pre { margin:0; padding:0 }
 
 body {
