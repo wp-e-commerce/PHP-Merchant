@@ -22,7 +22,7 @@
 		    cse.hide().addClass('hidden');
 		$('a[href="#toc"]').click(
 			function(){
-				var t = $(this);
+				var t = $('header nav a[href="#toc"]');
 				toc.slideToggle(function(){
 					toc.toggleClass('hidden');
 					t.toggleTextArrow();
