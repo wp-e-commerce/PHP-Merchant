@@ -232,18 +232,18 @@ article {
     	    text-align:center;
     	}
 
-        article nav {
+        .in-this-topic {
             background-color:#ffffd4;
             border:1px solid #ccc;
             float:right;
             margin-left:10px;
             width:25%;
         }
-            article nav h4 {
+            .in-this-topic h4 {
                 margin:18px;
             }
 
-            article nav ul ul {
+            .in-this-topic ul ul {
                 margin-bottom:0;
             }
 
