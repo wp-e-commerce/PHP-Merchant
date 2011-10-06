@@ -14,9 +14,9 @@ PHP Merchant is right for you if you want a library that:
 Take a look at [our getting started guide](http://www.php-merchant.org/docs/getting-started.html), there's a good code example there.
 
 ## Links ##
-[home](http://www.php-merchant.org)
-[code](https://github.com/instinct/PHP-Merchant)
-[online docs](http://www.php-merchant.org/docs)
-[issues](https://github.com/instinct/PHP-Merchant/issues)
-[discuss](http://discuss.php-merchant.org/)
-[contribute](http://www.php-merchant.org/docs/contributing.html)
+* [home](http://www.php-merchant.org)
+* [code](https://github.com/instinct/PHP-Merchant)
+* [online docs](http://www.php-merchant.org/docs)
+* [issues](https://github.com/instinct/PHP-Merchant/issues)
+* [discuss](http://discuss.php-merchant.org/)
+* [contribute](http://www.php-merchant.org/docs/contributing.html)
