@@ -8,6 +8,12 @@ class PHP_Merchant_Paypal_Express_Checkout extends PHP_Merchant_Paypal
 		parent::__construct( $options );
 	}
 
+	/**
+	 * Creates and returns the payment component of a PayPal NVP API request. 
+	 * 
+	 * @param $action String The PayPal Express Checkout payment action. One of Sale, Authorization or Order. For more details, see here: https://cms.paypal.com/us/cgi-bin/?cmd=_render-content&content_ID=developer/e_howto_api_nvp_r_SetExpressCheckout#id1055FM0B05Z__N507DD
+	 * @return Array An array of name value pairs for each element representing a payment in a PayPal NVP API request. 
+	 */
 	protected function add_payment( $action ) {
 		$request = array(
 			'PAYMENTREQUEST_0_AMT'           => $this->format( $this->options['amount'] ),
@@ -61,6 +67,11 @@ class PHP_Merchant_Paypal_Express_Checkout extends PHP_Merchant_Paypal
 		return $request;
 	}
 
+	/**
+	 * Creates and returns the Shipping component of a PayPal NVP API request. 
+	 * 
+	 * @return Array An array of name value pairs for each element required to explain shipping information to PayPal via an NVP API request. 
+	 */
 	protected function add_address() {
 		$map = array(
 			'name'     => 'PAYMENTREQUEST_0_SHIPTONAME',
@@ -83,6 +94,13 @@ class PHP_Merchant_Paypal_Express_Checkout extends PHP_Merchant_Paypal
 		return $request;
 	}
 
+	/**
+	 * Creates and returns the entire order details component of the PayPal NVP API request string. 
+	 * 
+	 * @uses self::add_address() to add an address to the request
+	 * @uses self::add_payment() to add the payment details to the request
+	 * @return Array An array of name value pairs for each element representing a payment via the PayPal NVP API. 
+	 */
 	protected function build_checkout_request( $action, $options = array() ) {
 		$request = array();
 
@@ -107,6 +125,12 @@ class PHP_Merchant_Paypal_Express_Checkout extends PHP_Merchant_Paypal
 		return $request;
 	}
 
+	/**
+	 * Initiates an Express Checkout payment by calling PayPal to perform the SetExpressCheckout NVP API method. 
+	 * 
+	 * @uses self::build_checkout_request() to create the request
+	 * @return PHP_Merchant_Paypal_Express_Checkout_Response An object containing the details of PayPal's response to the request. 
+	 */
 	public function setup_purchase( $options = array() ) {
 		$this->options = array_merge( $this->options, $options );
 		$this->requires( 'amount', 'return_url', 'cancel_url' );
@@ -116,18 +140,35 @@ class PHP_Merchant_Paypal_Express_Checkout extends PHP_Merchant_Paypal
 		return new PHP_Merchant_Paypal_Express_Checkout_Response( $response_str );
 	}
 
+	/**
+	 * Creates and returns all the name => value pairs required to get checkout details from PayPal, which is just the token for the checkout. 
+	 * 
+	 * @return Array An array of name value pairs for each element required to perform a GetExpressCheckoutDetails NVP API request
+	 */
 	public function build_get_details_request( $token ) {
 		return array(
 			'TOKEN' => $token,
 		);
 	}
 
+	/**
+	 * Gets the details of an express checkout transaction by calling PayPal to perform the GetExpressCheckoutDetails NVP API method. 
+	 * 
+	 * @uses self::build_get_details_request() to create the request
+	 * @return PHP_Merchant_Paypal_Express_Checkout_Response An object containing the details of PayPal's response to the request. 
+	 */
 	public function get_details_for( $token ) {
 		$request = $this->build_get_details_request( $token );
 		$response_str = $this->commit( 'GetExpressCheckoutDetails', $request );
 		return new PHP_Merchant_Paypal_Express_Checkout_Response( $response_str );
 	}
 
+	/**
+	 * Completes an Express Checkout transaction by calling PayPal to perform the DoExpressCheckoutPayment NVP API method. 
+	 * 
+	 * @uses self::build_checkout_request() to create the request
+	 * @return PHP_Merchant_Paypal_Express_Checkout_Response An object containing the details of PayPal's response to the request. 
+	 */
 	public function purchase( $options = array() ) {
 		$this->options = array_merge( $this->options, $options );
 		$this->requires( 'amount', 'token', 'payer_id' );
