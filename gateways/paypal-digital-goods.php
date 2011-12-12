@@ -38,8 +38,6 @@ class PHP_Merchant_Paypal_Digital_Goods extends PHP_Merchant_Paypal_Express_Chec
 	 * @return PHP_Merchant_Paypal_Express_Checkout_Response An object containing the details of PayPal's response to the request. 
 	 */
 	public function setup_purchase( $options = array() ) {
-		$this->requires( 'items' );
-
 		return parent::setup_purchase( $options );
 	}
 
@@ -52,9 +50,30 @@ class PHP_Merchant_Paypal_Digital_Goods extends PHP_Merchant_Paypal_Express_Chec
 	 * @return PHP_Merchant_Paypal_Express_Checkout_Response An object containing the details of PayPal's response to the request. 
 	 */
 	public function purchase( $options = array() ) {
-		$this->requires( 'items' );
-
 		return parent::purchase( $options );
 	}
+
+
+	/**
+	 * The Javascript to invoke the digital goods in context checkout process.
+	 * 
+	 * No need to call this function manually, required scripts are automatically printed with @see print_buy_buttion(). 
+	 * If you do print this script manually, print it after the button in the DOM to ensure the 
+	 * click event is properly hooked.
+	 */
+	public function get_script( $args = array() ){
+		
+		if( empty( $args['element_id'] ) )
+			$args['element_id'] = 'paypal-submit';
+
+		$dg_script  = '<script src ="https://www.paypalobjects.com/js/external/dg.js" type="text/javascript"></script>'
+					. '<script>'
+					. 'var dg = new PAYPAL.apps.DGFlow({'
+					. 'trigger: "' . $args['element_id'] . '"' // the ID of the HTML element which calls setExpressCheckout
+					. '}); </script>';
+
+		return $dg_script;
+	}
+
 
 }
